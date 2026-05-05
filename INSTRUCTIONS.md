@@ -180,11 +180,13 @@ The method of adjustment may depend on your chosen belt clamp design:
 
 ![Adjustment](https://github.com/user-attachments/assets/36ae4e29-3134-4734-8135-1fb9f7847400)
 
-The ideal total cord length is approximately `50CM`; of which we want about half to be wound around the pulley when the harness is fastened.
+For reference, a _single turn_ of the pulley is about `~10CM` of cord. This is useful when working out how much cord you have wrapped around the enclosed pulley.
 
-If you allow the cord to _fully unwind_, the motors will not be able to apply the correct force. Make sure _at least one turn_ of cord is wrapped around the pulleys. To do this, increase the length of your shoulder harness belt by roughly `10CM`.
+Since our harness is going to be self-adjusting (at least in the shoulders), we should make sure we have `~25CM` of cord between the belt clamps and the pulleys. Obviously we do not want our belt clamps colliding with the pulleys under normal operation.
 
-If you allow _too much_ cord to wrap around a pulley, it may start binding. If so, reduce the length of your shoulder harness belt. If you cannot do this, reduce the length of the cord; ensuring that there is at least some cord _not_ wrapped around the pulley when the harness is fastened.
+We also want there to _always_ be at least some cord wrapped around the pulleys (`10~20CM`), as the motors will be unable to apply torque properly if the cord is fully unwound. Do not wrap more than `40CM` or about _four turns_ of cord, as this will start to bind the pulley.
+
+![Cord Wrapping](https://github.com/user-attachments/assets/23a5a874-b905-484b-865d-39467735623d)
 
 It is important that the cord is aligned such that it does not rub against the _sides_ of the pulley housing. The housing is designed to freely rotate with the cord at any angle along the axis of the motor; so if you move your chair backwards or forwards, it doesn't cause a problem. However the motor pulleys must line up perfectly underneath the seat's belt holes to avoid rubbing. In other words, the motor axles must be _perpendicular_ to the cords:
 
