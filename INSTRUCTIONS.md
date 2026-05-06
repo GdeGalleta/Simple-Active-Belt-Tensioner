@@ -145,6 +145,22 @@ Strictly speaking this would be a downgrade from the 'Ideal Diode' style boards,
 
 See the diagrams above for a reference circuit design.
 
+## Wiring Up
+
+Since the Waveshare board and motors are plug-and play, this is pretty straight forward.
+
+If you're using the [Back-Driving Protection](#back-driving-protection), plug that into the control board (either the XT60 or DC Barrel sockets) and then into the power supply; otherwise just plug the power supply into the board directly.
+
+If this is your first-time setup, your motors will need to be configured, so start with only a single motor plugged into the board. The plugin will tell you when to plug in the second motor.
+
+It doesn't matter which of the exposed connectors on the top of the board you use for each motor. Make sure you've fully seated both the two-pin power plug and four-pin data plug.
+
+Plug your USB type-c cable (one is supplied with the board) into the USB socket closest to the power connectors (marked `DDSM` on the board). If you use the other USB socket, it won't work.
+
+If everything is connected correctly, the board will be detected by the SimHub plugin. No drivers are required.
+
+> ⚠️ **Important:** Do not attempt to power or test the motors while not securely installed on the rig. If they start rotating while loose, they'll move around and potentially destroy themselves, the control board and the surface they are on
+
 ## Adjustment
 
 If you already have a harness, you'll be accustomed to tightening it up with the buckles/straps it has. **You don't need to do that with this tensioner**, since it pre-tensions the harness for you (see `Idle Tension` in the `Tension` tab of the plugin).
@@ -164,11 +180,13 @@ The method of adjustment may depend on your chosen belt clamp design:
 
 ![Adjustment](https://github.com/user-attachments/assets/36ae4e29-3134-4734-8135-1fb9f7847400)
 
-The ideal total cord length is approximately `50CM`; of which we want about half to be wound around the pulley when the harness is fastened.
+For reference, a _single turn_ of the pulley is about `~10CM` of cord. This is useful when working out how much cord you have wrapped around the enclosed pulley.
 
-If you allow the cord to _fully unwind_, the motors will not be able to apply the correct force. Make sure _at least one turn_ of cord is wrapped around the pulleys. To do this, increase the length of your shoulder harness belt by roughly `10CM`.
+Since our harness is going to be self-adjusting (at least in the shoulders), we should make sure we have `~25CM` of cord between the belt clamps and the pulleys. Obviously we do not want our belt clamps colliding with the pulleys under normal operation.
 
-If you allow _too much_ cord to wrap around a pulley, it may start binding. If so, reduce the length of your shoulder harness belt. If you cannot do this, reduce the length of the cord; ensuring that there is at least some cord _not_ wrapped around the pulley when the harness is fastened.
+We also want there to _always_ be at least some cord wrapped around the pulleys (`10~20CM`), as the motors will be unable to apply torque properly if the cord is fully unwound. Do not wrap more than `40CM` or about _four turns_ of cord, as this will start to bind the pulley.
+
+![Cord Wrapping](https://github.com/user-attachments/assets/23a5a874-b905-484b-865d-39467735623d)
 
 It is important that the cord is aligned such that it does not rub against the _sides_ of the pulley housing. The housing is designed to freely rotate with the cord at any angle along the axis of the motor; so if you move your chair backwards or forwards, it doesn't cause a problem. However the motor pulleys must line up perfectly underneath the seat's belt holes to avoid rubbing. In other words, the motor axles must be _perpendicular_ to the cords:
 
