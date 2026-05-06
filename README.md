@@ -1,6 +1,6 @@
 > 📢 **Important:** This is a _pre-release_ of the project and considered to be under active development and testing. If you're not prepared to do some tinkering and/or deal with initial usability issues, it is recommended that you do not attempt to build it right now and instead wait for the `v1.0` release
 
-![SABT Logo](https://github.com/user-attachments/assets/768dae61-de1a-435a-945e-86f4a0aaee6d)
+![SABT Logo](https://github.com/user-attachments/assets/b6603db9-19e0-4a30-8c0e-a23675a9797a)
 
 ![Diagram](https://github.com/user-attachments/assets/943fe759-e230-4e11-926b-9c8e9f3385c2)
 
@@ -11,6 +11,8 @@ A haptic device for sim racing, designed specifically for people who do not have
 It requires **no soldering or programming** and can be built for **as little as ~215 GBP** _including the harness_.
 
 ## What Is It?
+
+![Pulley Motor](https://github.com/user-attachments/assets/6482c047-358e-4a5b-8aed-ad21be5f4adb)
 
 An _active belt tensioner_ is a device that attaches between your sim rig and the anchor points of your racing harness. It dynamically tensions the harness in response to game telemetry; giving a sense of the forces you'd be experencing in a vehicle when changing speed, braking, cornering and jumping/landing.
 
@@ -75,8 +77,6 @@ The two motors are anchored to your rig with printed brackets. A self-orienting 
 The ends of each shoulder belt are attached to lengths UHMWPE/Dyneema cord, which are wrapped around each motor pulley.
 
 When SimHub sends game telemetry to our plugin, it converts this into torque commands and send them to the motors over a serial connection.
-
-![Motors In Action](https://github.com/user-attachments/assets/8495272a-16cc-4c07-8b0a-e34acbab7320)
 
 ## How Does It Perform?
 
