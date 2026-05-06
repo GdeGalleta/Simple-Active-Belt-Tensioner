@@ -2,7 +2,7 @@
 
 There are two things you'll need to use this belt tensioner:
 - [SimHub](https://www.simhubdash.com/) and a [Licesnse](https://www.simhubdash.com/get-a-license/) for 60FPS telemetry data
-- This SimHub [Plugin](./Plugin), which must be copied into SimHub's installation directory
+- The project's SimHub [Plugin](./Plugin), which must be copied into SimHub's installation directory
 
 ## Downloading SimHub
 
