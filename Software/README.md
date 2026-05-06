@@ -27,7 +27,7 @@ Note that you do not need a _'Motion License'_ to use this tensioner; that is a 
 ## Downloading & Installing The Plugin
 
 1. Make sure _SimHub_ is closed before proceeding
-2. Download the [SABT SimHub Plugin.zip](SABT%20SimHub%20Plugin.zip) file
+2. Download the latest [SABT SimHub Plugin.zip](https://github.com/GeorgeWilkins/Simple-Active-Belt-Tensioner/releases/latest/download/SABT.SimHub.Plugin.zip)
 3. Unzip the downloaded file, which will contain a `.dll` file (the plugin itself) and a `/Languages/` folder
 3. Copy both into your SimHub installation directory (e.g. `C:\Program Files\SimHub`)
 4. Open _SimHub_, which should then recognise the plugin and load it
