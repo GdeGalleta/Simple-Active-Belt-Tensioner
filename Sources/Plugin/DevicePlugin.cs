@@ -318,17 +318,23 @@ namespace User.ActiveBeltTensioner
                         leftTarget = minimumTension + (totalModifierLeft * minimumTension);
                     }
                     else {
-                        leftTarget = minimumTension + totalModifierLeft;
+                        leftTarget = minimumTension + (totalModifierLeft * (maximumTension - minimumTension));
                     }
+
                     if (totalModifierRight < 0.0)
                     {
                         rightTarget = minimumTension + (totalModifierRight * minimumTension);
                     }
                     else
                     {
-                        rightTarget = minimumTension + totalModifierRight;
+                        rightTarget = minimumTension + (totalModifierRight * (maximumTension - minimumTension));
                     }
 
+                    // Map To Range (Minimum ~ Maximum Tension)
+                    leftTarget = ClampTo(leftTarget, 0.0, maximumTension);
+                    rightTarget = ClampTo(rightTarget, 0.0, maximumTension);
+
+                    // Idle Tension
                     if (!isMoving)
                     {
                         leftTarget = idleTension;
