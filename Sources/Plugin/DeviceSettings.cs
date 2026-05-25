@@ -58,6 +58,21 @@ namespace User.ActiveBeltTensioner
             }
         }
 
+        private bool _disableActivationConfirmation = false;
+        public bool DisableActivationConfirmation
+        {
+            get => _disableActivationConfirmation;
+            set
+            {
+                if (_disableActivationConfirmation != value) {
+                    _disableActivationConfirmation = value;
+                    InvokePropertyChange(nameof(DisableActivationConfirmation));
+                }
+               
+            }
+
+        }
+
         private bool _isFlipped = false;
         public bool IsFlipped
         {

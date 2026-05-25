@@ -123,6 +123,26 @@ namespace User.ActiveBeltTensioner
                 }
             }
 
+            if (e.PropertyName == nameof(Settings.DisableActivationConfirmation) && Settings.DisableActivationConfirmation)
+            {
+                var result = MessageBoxResult.No;
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    result = MessageBox.Show(
+                        SLoc.GetValue("SABT_Message_DisableActivationWarningWarning"),
+                        SLoc.GetValue("SABT_Plugin"),
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Warning
+                    );
+                });
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    Settings.DisableActivationConfirmation = false;
+                }
+            }
+
             if (
                 e.PropertyName == nameof(Settings.MinimumSurge) ||
                 e.PropertyName == nameof(Settings.MaximumSurge) ||
@@ -222,7 +242,7 @@ namespace User.ActiveBeltTensioner
                     motorController = MotorController;
                 }
 
-                if (_hasBeenInactive)
+                if (_hasBeenInactive && !Settings.DisableActivationConfirmation)
                 {
                     MessageBoxResult result = MessageBoxResult.No;
 
