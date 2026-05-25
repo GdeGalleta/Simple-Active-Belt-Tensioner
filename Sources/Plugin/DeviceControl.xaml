@@ -218,6 +218,34 @@
 
                                     <oxy:PlotView Height="700" HorizontalAlignment="Stretch" Margin="-14,-10,-14,15" Background="#202020" Model="{Binding TelemetryGraphModel}" />
 
+
+
+
+
+                                    <StackPanel Orientation="Horizontal" Margin="-14,-15,-14,14" Background="#202020">
+                                        <StackPanel Orientation="Horizontal" Margin="50,0,0,15">
+                                            <Label Content="{SLoc SABT_Legend_Surge}" d:Content="Plot" Foreground="#f44336" VerticalAlignment="Center" />
+                                            <styles:SHToggleCheckbox IsChecked="{Binding Settings.ShowSurgePlot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                            <Label Content="{SLoc SABT_Legend_Sway}" d:Content="Plot" Foreground="#4caf50" VerticalAlignment="Center" />
+                                            <styles:SHToggleCheckbox IsChecked="{Binding Settings.ShowSwayPlot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                            <Label Content="{SLoc SABT_Legend_Heave}" d:Content="Plot" Foreground="#ffeb3b" VerticalAlignment="Center" />
+                                            <styles:SHToggleCheckbox IsChecked="{Binding Settings.ShowHeavePlot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                            <Label Content="{SLoc SABT_Legend_Torque}" d:Content="Plot" Foreground="#119eda" VerticalAlignment="Center" />
+                                            <styles:SHToggleCheckbox IsChecked="{Binding Settings.ShowTorquePlot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </StackPanel>
+                                    </StackPanel>
+
+
+
+
+
+
                                     <ui:TitledRangeSlider Title="{SLoc SABT_Slider_SurgeLimits}" Maximum="50" Minimum="-50" LowerValue="{Binding Settings.MinimumSurge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UpperValue="{Binding Settings.MaximumSurge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Settings.IsNotAutomaticallyTuning}" />
                                     <ui:TitledRangeSlider Title="{SLoc SABT_Slider_SwayLimits}" Maximum="50" Minimum="-50" LowerValue="{Binding Settings.MinimumSway, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UpperValue="{Binding Settings.MaximumSway, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Settings.IsNotAutomaticallyTuning}" />
                                     <ui:TitledRangeSlider Title="{SLoc SABT_Slider_HeaveLimits}" Maximum="100" Minimum="-50" LowerValue="{Binding Settings.MinimumHeave, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UpperValue="{Binding Settings.MaximumHeave, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Settings.IsNotAutomaticallyTuning}" />

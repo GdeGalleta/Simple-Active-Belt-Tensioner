@@ -278,13 +278,16 @@
     <value>• Intensité de l'augmentation de tension sur les deux ceintures lors de la décélération</value>
   </data>
   <data name="SABT_Legend_Surge" xml:space="preserve">
-    <value>Surge</value>
+    <value>Montée</value>
   </data>
   <data name="SABT_Legend_Sway" xml:space="preserve">
     <value>Sway</value>
   </data>
+  <data name="SABT_Legend_Torque" xml:space="preserve">
+    <value>Couple</value>
+  </data>
   <data name="SABT_Legend_Heave" xml:space="preserve">
-    <value>Heave</value>
+    <value>Soulever</value>
   </data>
   <data name="SABT_Slider_Acceleration" xml:space="preserve">
     <value>Accélération</value>

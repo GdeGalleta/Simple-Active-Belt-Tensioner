@@ -7,11 +7,9 @@ using SimHub;
 using SimHub.Plugins;
 using System;
 using System.ComponentModel;
-using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Markup;
 using System.Windows.Media;
 using WoteverLocalization;
 
@@ -186,6 +184,18 @@ namespace User.ActiveBeltTensioner
 
                 return;
             }
+
+            if (
+                e.PropertyName == nameof(Settings.ShowSurgePlot) ||
+                e.PropertyName == nameof(Settings.ShowSwayPlot) ||
+                e.PropertyName == nameof(Settings.ShowHeavePlot) ||
+                e.PropertyName == nameof(Settings.ShowTorquePlot)
+            )
+            {
+                UpdateTelemetryGraphFilters();
+
+                return;
+            }
         }
 
         /// <summary>Called by SimHub when new telemetry data is available</summary>
@@ -233,7 +243,7 @@ namespace User.ActiveBeltTensioner
             MotorController.Disconnect();
         }
 
-        /// <summary>Evaluates the <see cref="TelemetrySnapshot"/> properties, then performs auto-tuning or calculates the appropriate effects to apply and sends commands to the motors</summary>
+        /// <summary>Evaluates the <see cref="TelemetrySnapshot"/> properties, then performs auto-tuning and calculates the appropriate effects to apply (sending commands to the motors if enabled)</summary>
         /// <remarks>Runs as a separate thread to keep effects processing and motor commands out of the <see cref="DataUpdate"/> calls</remarks>
         private void ControlLoop()
         {
@@ -504,6 +514,8 @@ namespace User.ActiveBeltTensioner
         private LineSeries _surgeSeries;
         private LineSeries _swaySeries;
         private LineSeries _heaveSeries;
+        private LineSeries _leftTorqueSeries;
+        private LineSeries _rightTorqueSeries;
 
         private LineAnnotation _surgeMinimumAnnotation;
         private LineAnnotation _surgeMaximumAnnotation;
@@ -516,12 +528,15 @@ namespace User.ActiveBeltTensioner
         private RectangleAnnotation _leftTargetBarAnnotation;
         private RectangleAnnotation _rightTargetBarAnnotation;
 
-        private LinearAxis _yAxis;
-        private LinearAxis _xAxis;
+        private LinearAxis _accelerationAxis;
+        private LinearAxis _timeAxis;
+        private LinearAxis _torqueAxis;
         private LinearAxis _targetAxis;
 
         private int _plotPointIndex = 0;
-        private const int _maximumPlotPoints = 100;
+        private const int _maximumPlotPoints = 150;
+        private const string _accelerationAxisKey = "accelerationAxis";
+        private const string _torqueAxisKey = "torqueAxis";
         private const string _targetAxisKey = "targetAxis";
 
         private DateTime _lastPlotRefresh = DateTime.MinValue;
@@ -530,8 +545,12 @@ namespace User.ActiveBeltTensioner
         /// <summary>Initialises the telemetry graph instance and configures its styling and legends</summary>
         private void InitialiseTelemetryGraph()
         {
-            OxyColor blue = OxyColor.Parse("#119eda");
+            OxyColor lighterBlue = OxyColor.Parse("#119eda");
+            OxyColor darkerBlue = OxyColor.Parse("#0b668d");
             OxyColor grey = OxyColor.Parse("#454545");
+            OxyColor red = OxyColor.Parse("#f44336");
+            OxyColor green = OxyColor.Parse("#357c38");
+            OxyColor yellow = OxyColor.Parse("#ffd03a");
 
             TelemetryGraphModel = new PlotModel {
                 Title = " ",
@@ -543,7 +562,8 @@ namespace User.ActiveBeltTensioner
                 PlotType = PlotType.XY
             };
 
-            _yAxis = new LinearAxis {
+            _accelerationAxis = new LinearAxis {
+                Key = _accelerationAxisKey,
                 Title = "m/s²",
                 Position = AxisPosition.Left,
                 MajorGridlineStyle = LineStyle.Solid,
@@ -557,24 +577,24 @@ namespace User.ActiveBeltTensioner
                 IsZoomEnabled = false
             };
 
-            TelemetryGraphModel.Axes.Add(_yAxis);
-
-            _xAxis = new LinearAxis
+            _torqueAxis = new LinearAxis
             {
-                Position = AxisPosition.Bottom,
-                IsAxisVisible = false,
+                Key = _torqueAxisKey,
+                Title = "%",
+                Position = AxisPosition.Right,
+                MajorGridlineStyle = LineStyle.None,
+                MinorGridlineStyle = LineStyle.None,
+                TicklineColor = OxyColors.Transparent,
+                Minimum = 0,
+                Maximum = 100,
                 IsPanEnabled = false,
-                IsZoomEnabled = false,
-                StartPosition = 0.0,
-                EndPosition = 0.9
+                IsZoomEnabled = false
             };
-
-            TelemetryGraphModel.Axes.Add(_xAxis);
 
             _targetAxis = new LinearAxis
             {
-                Position = AxisPosition.Bottom,
                 Key = _targetAxisKey,
+                Position = AxisPosition.Bottom,
                 Minimum = 0,
                 Maximum = 1,
                 IsAxisVisible = false,
@@ -584,19 +604,35 @@ namespace User.ActiveBeltTensioner
                 EndPosition = 1.0
             };
 
+            _timeAxis = new LinearAxis
+            {
+                Position = AxisPosition.Bottom,
+                IsAxisVisible = false,
+                IsPanEnabled = false,
+                IsZoomEnabled = false,
+                StartPosition = 0.0,
+                EndPosition = 0.9
+            };
+
+            TelemetryGraphModel.Axes.Add(_accelerationAxis);
+            TelemetryGraphModel.Axes.Add(_torqueAxis);
+            TelemetryGraphModel.Axes.Add(_timeAxis);
             TelemetryGraphModel.Axes.Add(_targetAxis);
 
-            _surgeSeries = AddTelemetryLine(SLoc.GetValue("SABT_Legend_Surge"), OxyColors.Red);
-            _surgeMinimumAnnotation = AddThresholdLine(OxyColors.Red);
-            _surgeMaximumAnnotation = AddThresholdLine(OxyColors.Red);
+            _surgeSeries = AddTelemetryLine(_accelerationAxisKey, SLoc.GetValue("SABT_Legend_Surge"), red);
+            _surgeMinimumAnnotation = AddThresholdLine(red);
+            _surgeMaximumAnnotation = AddThresholdLine(red);
 
-            _swaySeries = AddTelemetryLine(SLoc.GetValue("SABT_Legend_Sway"), OxyColors.Green);
-            _swayMinimumAnnotation = AddThresholdLine(OxyColors.Green);
-            _swayMaximumAnnotation = AddThresholdLine(OxyColors.Green);
+            _swaySeries = AddTelemetryLine(_accelerationAxisKey, SLoc.GetValue("SABT_Legend_Sway"), green);
+            _swayMinimumAnnotation = AddThresholdLine(green);
+            _swayMaximumAnnotation = AddThresholdLine(green);
 
-            _heaveSeries = AddTelemetryLine(SLoc.GetValue("SABT_Legend_Heave"), OxyColors.Blue);
-            _heaveMinimumAnnotation = AddThresholdLine(OxyColors.Blue);
-            _heaveMaximumAnnotation = AddThresholdLine(OxyColors.Blue);
+            _heaveSeries = AddTelemetryLine(_accelerationAxisKey, SLoc.GetValue("SABT_Legend_Heave"), yellow);
+            _heaveMinimumAnnotation = AddThresholdLine(yellow);
+            _heaveMaximumAnnotation = AddThresholdLine(yellow);
+
+            _leftTorqueSeries = AddTelemetryLine(_torqueAxisKey, SLoc.GetValue("SABT_Legend_Torque") + " (L)", lighterBlue);
+            _rightTorqueSeries = AddTelemetryLine(_torqueAxisKey, SLoc.GetValue("SABT_Legend_Torque") + " (R)", darkerBlue);
 
             _targetDividerAnnotation = new LineAnnotation
             {
@@ -611,23 +647,23 @@ namespace User.ActiveBeltTensioner
             _leftTargetBarAnnotation = new RectangleAnnotation
             {
                 XAxisKey = _targetAxisKey,
-                Fill = blue,
+                Fill = lighterBlue,
                 Layer = AnnotationLayer.AboveSeries,
                 MinimumX = 0.1,
                 MaximumX = 0.45,
-                MinimumY = _yAxis.Minimum,
-                MaximumY = _yAxis.Minimum
+                MinimumY = _accelerationAxis.Minimum,
+                MaximumY = _accelerationAxis.Minimum
             };
 
             _rightTargetBarAnnotation = new RectangleAnnotation
             {
                 XAxisKey = _targetAxisKey,
-                Fill = blue,
+                Fill = darkerBlue,
                 Layer = AnnotationLayer.AboveSeries,
                 MinimumX = 0.55,
                 MaximumX = 0.9,
-                MinimumY = _yAxis.Minimum,
-                MaximumY = _yAxis.Minimum
+                MinimumY = _accelerationAxis.Minimum,
+                MaximumY = _accelerationAxis.Minimum
             };
 
             TelemetryGraphModel.Annotations.Add(_targetDividerAnnotation);
@@ -646,31 +682,70 @@ namespace User.ActiveBeltTensioner
             }
         }
 
+        // <summary>Updates the visibility of the various plots</summary>
+        private void UpdateTelemetryGraphFilters()
+        {
+            if (_surgeSeries != null)
+            {
+                _surgeSeries.IsVisible = Settings.ShowSurgePlot;
+                ToggleThresholdlLine(_surgeMinimumAnnotation, Settings.ShowSurgePlot);
+                ToggleThresholdlLine(_surgeMaximumAnnotation, Settings.ShowSurgePlot);
+            }
+            if (_swaySeries != null)
+            {
+                _swaySeries.IsVisible = Settings.ShowSwayPlot;
+                ToggleThresholdlLine(_swayMinimumAnnotation, Settings.ShowSwayPlot);
+                ToggleThresholdlLine(_swayMaximumAnnotation, Settings.ShowSwayPlot);
+            }
+            if (_heaveSeries != null)
+            {
+                _heaveSeries.IsVisible = Settings.ShowHeavePlot;
+                ToggleThresholdlLine(_heaveMinimumAnnotation, Settings.ShowHeavePlot);
+                ToggleThresholdlLine(_heaveMaximumAnnotation, Settings.ShowHeavePlot);
+            }
+            if (_leftTorqueSeries != null)
+            {
+                _leftTorqueSeries.IsVisible = Settings.ShowTorquePlot;
+            }
+            if (_rightTorqueSeries != null)
+            {
+                _rightTorqueSeries.IsVisible = Settings.ShowTorquePlot;
+            }
+
+            TelemetryGraphModel.InvalidatePlot(true);
+
+            RedrawGraph();
+        }
+
         /// <summary>Applies the given telemetry data to the telemetry graph and requests (but does not guarantee) a redraw</summary>
-        private void UpdateTelemetryGraph(double surge, double sway, double heave, double leftTarget, double rightTarget)
+        private void UpdateTelemetryGraph(double surge, double sway, double heave, double leftTorque, double rightTorque)
         {
             double x = _plotPointIndex++;
 
             _surgeSeries.Points.Add(new DataPoint(x, surge));
             _swaySeries.Points.Add(new DataPoint(x, sway));
             _heaveSeries.Points.Add(new DataPoint(x, heave));
+            _leftTorqueSeries.Points.Add(new DataPoint(x, leftTorque * 100));
+            _rightTorqueSeries.Points.Add(new DataPoint(x, rightTorque * 100));
 
             if (_surgeSeries.Points.Count > _maximumPlotPoints)
             {
                 _surgeSeries.Points.RemoveAt(0);
                 _swaySeries.Points.RemoveAt(0);
                 _heaveSeries.Points.RemoveAt(0);
+                _leftTorqueSeries.Points.RemoveAt(0);
+                _rightTorqueSeries.Points.RemoveAt(0);
             }
 
-            double leftTargetClamped = ClampTo(leftTarget, 0.0, 1.0);
-            double rightTargetClamped = ClampTo(rightTarget, 0.0, 1.0);
-            double graphHeight = _yAxis.Maximum - _yAxis.Minimum;
+            double leftTorqueClamped = ClampTo(leftTorque, 0.0, 1.0);
+            double rightTorqueClamped = ClampTo(rightTorque, 0.0, 1.0);
+            double graphHeight = _accelerationAxis.Maximum - _accelerationAxis.Minimum;
 
-            _leftTargetBarAnnotation.MinimumY = _yAxis.Minimum;
-            _leftTargetBarAnnotation.MaximumY = _yAxis.Minimum + (leftTargetClamped * graphHeight);
+            _leftTargetBarAnnotation.MinimumY = _accelerationAxis.Minimum;
+            _leftTargetBarAnnotation.MaximumY = _accelerationAxis.Minimum + (leftTorqueClamped * graphHeight);
 
-            _rightTargetBarAnnotation.MinimumY = _yAxis.Minimum;
-            _rightTargetBarAnnotation.MaximumY = _yAxis.Minimum + (rightTargetClamped * graphHeight);
+            _rightTargetBarAnnotation.MinimumY = _accelerationAxis.Minimum;
+            _rightTargetBarAnnotation.MaximumY = _accelerationAxis.Minimum + (rightTorqueClamped * graphHeight);
 
             RedrawGraph();
         }
@@ -712,14 +787,40 @@ namespace User.ActiveBeltTensioner
             return annotation;
         }
 
-        /// <summary>Adds and returns a new telemetry line of the given title and color to the telemetry graph</summary>
-        private LineSeries AddTelemetryLine(string title, OxyColor color)
+        /// <summary>Toggles the removal/addition of an existing threshold line</summary>
+        private void ToggleThresholdlLine(Annotation annotation, bool shouldShow)
+        {
+            if (annotation == null || TelemetryGraphModel == null)
+            {
+                return;
+            }
+
+            if (TelemetryGraphModel.Annotations.Contains(annotation))
+            {
+                if (!shouldShow)
+                {
+                    TelemetryGraphModel.Annotations.Remove(annotation);
+                }
+            }
+            else
+            {
+                if (shouldShow)
+                {
+                    TelemetryGraphModel.Annotations.Add(annotation);
+                }
+            }
+        }
+
+        /// <summary>Adds and returns a new telemetry line of the given title, color and style to the telemetry graph</summary>
+        private LineSeries AddTelemetryLine(string axisKey, string title, OxyColor color, LineStyle style = LineStyle.Solid)
         {
             LineSeries series = new LineSeries
             {
+                YAxisKey = axisKey,
                 Title = title,
                 Color = color,
-                StrokeThickness = 2
+                StrokeThickness = 2,
+                LineStyle = style
             };
 
             series.Points.Capacity = _maximumPlotPoints;

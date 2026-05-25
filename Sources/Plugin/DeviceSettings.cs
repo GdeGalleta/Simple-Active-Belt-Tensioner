@@ -356,6 +356,64 @@ namespace User.ActiveBeltTensioner
             }
         }
 
+        private bool _showSurgePlot = true;
+        public bool ShowSurgePlot
+        {
+            get { return _showSurgePlot; }
+            set
+            {
+                if (_showSurgePlot != value)
+                {
+                    _showSurgePlot = value;
+                    InvokePropertyChange(nameof(ShowSurgePlot));
+                }
+            }
+        }
+
+        private bool _showSwayPlot = true;
+        public bool ShowSwayPlot
+        {
+            get { return _showSwayPlot; }
+            set
+            {
+                if (_showSwayPlot != value)
+                {
+                    _showSwayPlot = value;
+                    InvokePropertyChange(nameof(ShowSwayPlot));
+                }
+            }
+        }
+
+        private bool _showHeavePlot = true;
+        public bool ShowHeavePlot
+        {
+            get { return _showHeavePlot; }
+            set
+            {
+                if (_showHeavePlot != value)
+                {
+                    _showHeavePlot = value;
+                    InvokePropertyChange(nameof(ShowHeavePlot));
+                }
+            }
+        }
+
+        private bool _showTorquePlot = true;
+        public bool ShowTorquePlot
+        {
+            get { return _showTorquePlot; }
+            set
+            {
+                if (_showTorquePlot != value)
+                {
+                    _showTorquePlot = value;
+                    InvokePropertyChange(nameof(ShowTorquePlot));
+                }
+            }
+        }
+
+
+
         private string _currentGame = string.Empty;
         public string CurrentGame
         {

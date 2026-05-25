@@ -278,13 +278,16 @@
     <value>• Quanto le forze di decelerazione devono aumentare la tensione su entrambe le cinture</value>
   </data>
   <data name="SABT_Legend_Surge" xml:space="preserve">
-    <value>Surge</value>
+    <value>Ondata</value>
   </data>
   <data name="SABT_Legend_Sway" xml:space="preserve">
-    <value>Sway</value>
+    <value>Ondeggiare</value>
+  </data>
+  <data name="SABT_Legend_Torque" xml:space="preserve">
+    <value>Coppia</value>
   </data>
   <data name="SABT_Legend_Heave" xml:space="preserve">
-    <value>Heave</value>
+    <value>Sollevare</value>
   </data>
   <data name="SABT_Slider_Acceleration" xml:space="preserve">
     <value>Accelerazione</value>
@@ -348,7 +351,7 @@
     <value>Sito web</value>
   </data>
   <data name="SABT_Link_Email" xml:space="preserve">
-    <value>E-mail</value>
+    <value>E-Mail</value>
   </data>
   <data name="SABT_Link_GitHubProfile" xml:space="preserve">
     <value>Profilo GitHub</value>
