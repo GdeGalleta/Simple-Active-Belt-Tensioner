@@ -278,13 +278,16 @@
     <value>• Wie stark Verzögerungskräfte die Spannung auf beiden Gurten erhöhen sollen</value>
   </data>
   <data name="SABT_Legend_Surge" xml:space="preserve">
-    <value>Surge</value>
+    <value>Ansturm</value>
   </data>
   <data name="SABT_Legend_Sway" xml:space="preserve">
     <value>Sway</value>
   </data>
+  <data name="SABT_Legend_Torque" xml:space="preserve">
+    <value>Drehmoment</value>
+  </data>
   <data name="SABT_Legend_Heave" xml:space="preserve">
-    <value>Heave</value>
+    <value>Heben</value>
   </data>
   <data name="SABT_Slider_Acceleration" xml:space="preserve">
     <value>Beschleunigung</value>

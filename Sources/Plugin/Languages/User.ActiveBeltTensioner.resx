@@ -283,6 +283,9 @@
   <data name="SABT_Legend_Sway" xml:space="preserve">
     <value>Sway</value>
   </data>
+  <data name="SABT_Legend_Torque" xml:space="preserve">
+    <value>Torque</value>
+  </data>
   <data name="SABT_Legend_Heave" xml:space="preserve">
     <value>Heave</value>
   </data>
