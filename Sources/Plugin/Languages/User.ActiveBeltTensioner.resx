@@ -144,9 +144,6 @@
   <data name="SABT_Message_ActivationWarning" xml:space="preserve">
     <value>The belt tensioner motors will be activated. Proceed?</value>
   </data>
-  <data name="SABT_Message_DisableActivationWarningWarning" xml:space="preserve">
-    <value>This will disable the confirmation prompt before activating the motors; only enable this if you know what you are doing. Proceed?</value>
-  </data>
   <data name="SABT_Message_SimHubLicenseRequired" xml:space="preserve">
     <value>Your installation of SimHub is not licensed, so telemetry updates will be limited to 10Hz</value>
   </data>
@@ -182,9 +179,6 @@
   </data>
   <data name="SABT_Label_EnableMotors" xml:space="preserve">
     <value>Enable Motors</value>
-  </data>
-  <data name="SABT_Label_DisableActivationConfirmation" xml:space="preserve">
-    <value>Disable activation confirmation prompt</value>
   </data>
   <data name="SABT_Label_FlipChannels" xml:space="preserve">
     <value>Flip Channels</value>
