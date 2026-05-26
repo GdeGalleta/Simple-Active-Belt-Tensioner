@@ -43,6 +43,7 @@ namespace User.ActiveBeltTensioner
         private Thread _controlThread;
         private volatile bool _runControlLoop = false;
         private volatile bool _hasBeenInactive = true;
+        private volatile bool _hasBypassedActivationWarning = false;
 
         public struct TelemetrySnapshot
         {
@@ -64,9 +65,30 @@ namespace User.ActiveBeltTensioner
         {
             Logging.Current.Info("SABT: Initialising...");
 
+            // Load Serialised Settings
             Settings = this.ReadCommonSettings<DeviceSettings>(_settingsName, () => new DeviceSettings());
             Settings.PropertyChanged += OnSettingsChanged;
 
+            // Register Actions (For External Control)
+            pluginManager.AddAction(
+                actionName: "SABT.ToggleMotors",
+                actionStart: (PluginManager manager, string input) => {
+                    Logging.Current.Info("SABT: Toggling motors from external input");
+                    _hasBypassedActivationWarning = false;
+                    Settings.IsEnabled = !Settings.IsEnabled;
+                }
+            );
+
+            pluginManager.AddAction(
+                actionName: "SABT.ToggleMotorsWithoutWarning",
+                actionStart: (PluginManager manager, string input) => {
+                    Logging.Current.Info("SABT: Toggling motors from external input (without warning)");
+                    _hasBypassedActivationWarning = Settings.IsEnabled ? false : true;
+                    Settings.IsEnabled = !Settings.IsEnabled;
+                }
+            );
+
+            // Initialise Motor Controller
             MotorController = new MotorController(this);
             if (Settings.IsEnabled && Settings.IsSerialPortValid)
             {
@@ -76,10 +98,12 @@ namespace User.ActiveBeltTensioner
                 });
             }
 
+            // Initialise Telemetry Graph
             InitialiseTelemetryGraph();
             UpdateTelemetryGraphThresholds(Settings);
             UpdateTelemetryGraph(0, 0, 0);
 
+            // Start Control Loop
             _runControlLoop = true;
             _controlThread = new Thread(ControlLoop)
             {
@@ -219,27 +243,32 @@ namespace User.ActiveBeltTensioner
 
                 if (_hasBeenInactive)
                 {
-                    MessageBoxResult result = MessageBoxResult.No;
-
-                    Application.Current.Dispatcher.Invoke(() =>
+                    if (!_hasBypassedActivationWarning)
                     {
-                        result = MessageBox.Show(
-                            SLoc.GetValue("SABT_Message_ActivationWarning"),
-                            SLoc.GetValue("SABT_Plugin"),
-                            MessageBoxButton.YesNo,
-                            MessageBoxImage.Warning
-                        );
-                    });
+                        MessageBoxResult result = MessageBoxResult.No;
 
-                    if (result != MessageBoxResult.Yes)
-                    {
-                        Settings.IsEnabled = false;
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            result = MessageBox.Show(
+                                SLoc.GetValue("SABT_Message_ActivationWarning"),
+                                SLoc.GetValue("SABT_Plugin"),
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Warning
+                            );
+                        });
 
-                        continue;
+                        if (result != MessageBoxResult.Yes)
+                        {
+                            Settings.IsEnabled = false;
+
+                            continue;
+                        }
                     }
 
                     _hasBeenInactive = false;
                 }
+
+                _hasBypassedActivationWarning = false;
 
                 try
                 {
