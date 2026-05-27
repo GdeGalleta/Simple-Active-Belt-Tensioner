@@ -207,7 +207,7 @@ namespace User.ActiveBeltTensioner
 
             /// <summary>Sends a series of torque commands to the motor to oscillate it, while updating its status indicators</summary>
             /// <returns>Whether the motor responded as expected</returns>
-            public bool Test(int times = 8, double testTorque = 0.12)
+            public bool Test(int times = 10, double testTorque = 0.4)
             {
                 SLoc.GetValue("SABT_Status_Testing");
                 Graphic = MotorGraphic.Communicating;
@@ -244,7 +244,7 @@ namespace User.ActiveBeltTensioner
                         bad++;
                     }
 
-                    Thread.Sleep(200);
+                    Thread.Sleep(150);
 
                     torque = (short)((torque != 0) ? 0 : (testTorque * direction * _torqueLimit));
                 }
