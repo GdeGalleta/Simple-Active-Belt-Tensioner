@@ -16,6 +16,8 @@ If you have a _profile rig_, choose from the `Corner` or `Flat` profile bracket 
 - The smaller `30~40mm Hole Spacing` version is suitable for most standard `30-series` and `40-series` profile
 - The larger `50~90mm Hole Spacing` version is intended for larger or more unusual profiles
 
+There are optional `Extra Tall` variants that provide an additional `50mm` distance between the motor and the mounting surface, for situations where you need to clear obstructions. These obviously use more material and will flex more under load. Use the standard height versions if you can.
+
 If you have a _tubular frame_, choose the `Tube` clamp bracket design (which integrates with a commercial [truss clamp](https://www.amazon.co.uk/dp/B07DP1FK33) to attach to the tube).
 
 You only need to print _two_ of a single type of bracket. The designs are all symetrical.
@@ -27,7 +29,7 @@ Since there are a variety of belt types and terminations, a few options are avai
 - **Loop Clamp**: This is designed to loop through a 2" belt (up to 4mm thick) and secure back on itself using a standard belt buckle (likely to have come with your hanress)
 - **Through Clamp**: This is designed to clamp anywhere along a 2" belt without needing to shorten or terminate the belt itself
 
-The _through clamp_ is probably the easiest to integrate, with the _end clamp_ being the neatest; but needing the belts to be shortened specifically for the tensioner (or shortened non-destructively with buckles).
+The **Through Clamp** is probably the easiest to integrate, while the **End Clamp** is the neatest; but needing the belts to be shortened specifically for the tensioner (or shortened non-destructively with buckles).
 
 ## Printables List
 

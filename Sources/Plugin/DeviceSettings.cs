@@ -496,6 +496,8 @@ namespace User.ActiveBeltTensioner
 
         public void LoadProfile(GameTuningProfile profile)
         {
+            IsAutomaticallyTuning = false;
+
             MinimumSurge = profile.MinimumSurge;
             MaximumSurge = profile.MaximumSurge;
             MinimumSway = profile.MinimumSway;
