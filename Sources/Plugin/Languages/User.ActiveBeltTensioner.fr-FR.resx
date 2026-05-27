@@ -304,10 +304,11 @@
 • Pour de meilleurs résultats, définissez la « Tension en conduite » minimale à une valeur non nulle (voir onglet « Tension »)</value>
   </data>
   <data name="SABT_Label_AutomaticTuning" xml:space="preserve">
-    <value>• Lorsque cette option est activée, les valeurs des curseurs ci-dessous seront automatiquement ajustées pour correspondre aux valeurs minimales et maximales rapportées par la télémétrie du jeu
-• Conduisez de manière agressive (accélération, freinage et virages au maximum) pour générer une télémétrie appropriée
-• Désactivez l'option une fois terminé et ajustez manuellement les curseurs si nécessaire
-• La sortie moteur est désactivée pendant le réglage pour des raisons de sécurité</value>
+    <value>• Activez ceci après avoir chargé une rediffusion précédemment enregistrée pour le jeu dont vous souhaitez régler la télémétrie
+• Une fois activé, les valeurs des curseurs ci-dessous s'ajusteront automatiquement pour correspondre aux valeurs de la télémétrie rejouée
+• Pendant que la rediffusion est encore ouverte, désactivez ceci et ajustez finement les curseurs manuellement si nécessaire
+• La sortie moteur est désactivée pendant le réglage pour des raisons de sécurité
+• Le réglage automatique sera automatiquement désactivé si le profil actif change</value>
   </data>
   <data name="SABT_Label_SetMinimumTensionToNonZero" xml:space="preserve">
     <value>• Pour de meilleurs résultats, définissez la « Tension en conduite » minimale à une valeur non nulle (voir onglet « Tension »)</value>
@@ -335,10 +336,9 @@
     <value>Limites Heave (Sauts)</value>
   </data>
   <data name="SABT_Label_TelemetryLimits" xml:space="preserve">
-    <value>• Plages autorisées pour la télémétrie entrante (les valeurs hors plage seront limitées)
-• Adaptez-les aux types de véhicules que vous pilotez le plus souvent (les valeurs par défaut conviennent dans la plupart des cas)
-• Des plages plus étroites donnent des effets plus agressifs, des plages plus larges donnent plus de subtilité
-• Lancez un replay pour voir la télémétrie en direct tracée ci-dessus et faciliter les réglages</value>
+    <value>• Les plages de valeurs autorisées pour la télémétrie entrante (toute valeur supérieure ou inférieure sera écrêtée, résultant en une sortie moteur nulle ou maximale)
+• Des plages plus étroites produisent des effets plus agressifs, des plages plus larges produisent une plus grande subtilité
+• Évitez de définir les `Heave Limits` trop étroitement, car cela peut supprimer d'autres effets ; rappelez-vous que seuls les grands sauts/atterrissages doivent être ressentis dans les ceintures</value>
   </data>
   <data name="SABT_Slider_SmoothingFactor" xml:space="preserve">
     <value>Facteur de lissage</value>

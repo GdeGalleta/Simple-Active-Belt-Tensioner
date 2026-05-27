@@ -304,10 +304,11 @@
 • Per risultati migliori, imposta la 'Tensione in guida' minima a un valore diverso da zero (vedi scheda 'Tensione')</value>
   </data>
   <data name="SABT_Label_AutomaticTuning" xml:space="preserve">
-    <value>• Quando abilitato, i valori dei cursori sottostanti verranno regolati automaticamente per corrispondere ai valori minimi e massimi riportati dalla telemetria del gioco
-• Guida in modo aggressivo (acceleratore, frenata e curva al massimo) per generare la telemetria appropriata
-• Disabilita l'opzione una volta completato e regola finemente i cursori manualmente se necessario
-• L'uscita del motore è disabilitata durante la regolazione per motivi di sicurezza</value>
+    <value>• Attiva questa opzione dopo aver caricato una riproduzione precedentemente registrata per il gioco per cui desideri regolare la telemetria
+• Una volta abilitata, i valori dei cursori sottostanti si regoleranno automaticamente per corrispondere ai valori della telemetria riprodotta
+• Mentre la riproduzione è ancora aperta, disattiva questa opzione e regola manualmente i cursori se necessario
+• L'uscita del motore è disabilitata durante la regolazione per motivi di sicurezza
+• La regolazione automatica verrà disabilitata automaticamente se il profilo attivo cambia</value>
   </data>
   <data name="SABT_Label_SetMinimumTensionToNonZero" xml:space="preserve">
     <value>• Per risultati migliori, imposta la 'Tensione in guida' minima a un valore diverso da zero (vedi scheda 'Tensione')</value>
@@ -335,10 +336,9 @@
     <value>Limiti heave (Salti)</value>
   </data>
   <data name="SABT_Label_TelemetryLimits" xml:space="preserve">
-    <value>• Intervalli consentiti per la telemetria in ingresso (qualsiasi valore fuori intervallo verrà limitato)
-• Impostali in base ai tipi di veicoli che guidi più spesso (i valori predefiniti vanno bene nella maggior parte dei casi)
-• Intervalli più stretti producono effetti più aggressivi, intervalli più ampi producono maggiore delicatezza
-• Avvia un replay per vedere la telemetria in tempo reale tracciata sopra e facilitare la regolazione</value>
+    <value>• Gli intervalli di valori consentiti per la telemetria in ingresso (qualsiasi valore superiore o inferiore verrà limitato, risultando in un'uscita motore nulla o massima)
+• Intervalli più ristretti producono effetti più aggressivi, intervalli più ampi producono maggiore sottigliezza
+• Evitare di impostare `Heave Limits` in modo troppo ristretto, poiché questo può sopprimere altri effetti; ricordare che solo grandi salti/atterraggi dovrebbero essere percepiti nelle cinture</value>
   </data>
   <data name="SABT_Slider_SmoothingFactor" xml:space="preserve">
     <value>Fattore di smoothing</value>

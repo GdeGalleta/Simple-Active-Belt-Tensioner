@@ -68,6 +68,7 @@ namespace User.ActiveBeltTensioner
 
             // Load Serialised Settings
             Settings = this.ReadCommonSettings<DeviceSettings>(_settingsName, () => new DeviceSettings());
+            Settings.Persist = () => this.SaveCommonSettings(_settingsName, Settings);
             Settings.PropertyChanged += OnSettingsChanged;
 
             Settings.CurrentGame = (
