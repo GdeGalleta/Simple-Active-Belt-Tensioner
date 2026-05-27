@@ -304,10 +304,11 @@
 • Set minimum 'Driving Tension' to non-zero for best results (see 'Tension' tab)</value>
   </data>
   <data name="SABT_Label_AutomaticTuning" xml:space="preserve">
-    <value>• When enabled, the slider values below will be automatically adjusted to match the minimum and maximum values reported by the game telemetry
-• Drive aggressively (maximum throttle, braking and cornering) to generate appropriate telemetry
-• Disable the option once complete and fine-tune the sliders manually if needed
-• Motor output is disabled during tuning for safety reasons</value>
+    <value>• Turn this on after loading a previously recorded replay for the game you'd like to tune the telemetry for
+• Once enabled, the slider values below will automatically adjust to match the values from the replayed telemetry
+• While the replay is still open, turn this off and fine-tune the sliders manually if needed
+• Motor output is disabled during tuning for safety reasons
+• Auto-tuning will be automatically disabled if the active profile changes</value>
   </data>
   <data name="SABT_Label_SetMinimumTensionToNonZero" xml:space="preserve">
     <value>• Set minimum 'Driving Tension' to non-zero for best results (see 'Tension' tab)</value>
@@ -335,10 +336,9 @@
     <value>Heave Limits (Jumps)</value>
   </data>
   <data name="SABT_Label_TelemetryLimits" xml:space="preserve">
-    <value>• The permitted value ranges for incoming telemetry (anything more or less will be clipped)
-• Set appropriately for the types of vehicles you mostly drive (defaults are fine for most)
+    <value>• The permitted value ranges for incoming telemetry (anything more or less will be clipped, resulting in zero or maximum motor output)
 • Narrower ranges result in more aggressive effects, wider ranges result in greater subtlety
-• Run a replay to see live telemetry plotted above and to make adjustment easier</value>
+• Avoid setting `Heave Limits` too narrowly, as this can suppress other effects; remember that only large jumps/landings should be felt in the belts</value>
   </data>
   <data name="SABT_Slider_SmoothingFactor" xml:space="preserve">
     <value>Smoothing Factor</value>

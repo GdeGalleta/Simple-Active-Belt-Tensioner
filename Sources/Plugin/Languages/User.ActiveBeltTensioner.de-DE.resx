@@ -304,10 +304,11 @@
 • Für beste Ergebnisse die minimale „Fahrspannung“ auf einen Wert ungleich null setzen (siehe Registerkarte „Spannung“)</value>
   </data>
   <data name="SABT_Label_AutomaticTuning" xml:space="preserve">
-    <value>• Wenn aktiviert, werden die Schiebereglerwerte unten automatisch angepasst, um mit den von der Spieltelemetrie gemeldeten Minimal- und Maximalwerten übereinzustimmen
-• Fahren Sie aggressiv (maximales Gas, Bremsen und Kurvenfahrt), um geeignete Telemetriedaten zu erzeugen
-• Deaktivieren Sie die Option nach Abschluss und passen Sie die Schieberegler bei Bedarf manuell an
-• Die Motorausgabe ist während der Abstimmung aus Sicherheitsgründen deaktiviert</value>
+    <value>• Aktivieren Sie dies nach dem Laden einer zuvor aufgezeichneten Wiederholung für das Spiel, für das Sie die Telemetrie anpassen möchten
+• Nach der Aktivierung passen sich die Schiebereglerwerte unten automatisch an die Werte der wiedergegebenen Telemetrie an
+• Während die Wiederholung noch geöffnet ist, deaktivieren Sie dies und passen Sie die Schieberegler bei Bedarf manuell an
+• Die Motorausgabe ist während der Abstimmung aus Sicherheitsgründen deaktiviert
+• Die automatische Abstimmung wird automatisch deaktiviert, wenn sich das aktive Profil ändert</value>
   </data>
   <data name="SABT_Label_SetMinimumTensionToNonZero" xml:space="preserve">
     <value>• Für beste Ergebnisse die minimale „Fahrspannung“ auf einen Wert ungleich null setzen (siehe Registerkarte „Spannung“)</value>
@@ -335,10 +336,9 @@
     <value>Heave-Grenzen (Sprünge)</value>
   </data>
   <data name="SABT_Label_TelemetryLimits" xml:space="preserve">
-    <value>• Zulässige Wertebereiche für eingehende Telemetrie (alles außerhalb wird abgeschnitten)
-• Passen Sie die Bereiche an die Fahrzeugtypen an, die Sie meist fahren (Standardwerte passen für die meisten Fälle)
-• Engere Bereiche erzeugen aggressivere Effekte, weitere Bereiche sorgen für mehr Feinheit
-• Starten Sie eine Wiederholung, um die Live-Telemetrie oben grafisch zu sehen und die Anpassung zu erleichtern</value>
+    <value>• Die zulässigen Wertebereiche für eingehende Telemetriedaten (alles darüber oder darunter wird beschnitten, was zu null oder maximaler Motorleistung führt)
+• Engere Bereiche führen zu aggressiveren Effekten, breitere Bereiche führen zu größerer Subtilität
+• Vermeiden Sie eine zu enge Einstellung der `Heave Limits`, da dies andere Effekte unterdrücken kann; denken Sie daran, dass nur große Sprünge/Landungen in den Gurten spürbar sein sollten</value>
   </data>
   <data name="SABT_Slider_SmoothingFactor" xml:space="preserve">
     <value>Glättungsfaktor</value>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using Newtonsoft.Json;
 using SimHub;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -20,6 +22,10 @@ namespace User.ActiveBeltTensioner
         private readonly object _profilesLock = new object();
 
         private bool _isInitialised = false;
+
+        /// <summary>Invoke when the current settings should be serialized to the plugin's JSON configuration file</summary>
+        [JsonIgnore]
+        public Action Persist { get; set; }
 
         public void Initialise()
         {
@@ -497,6 +503,8 @@ namespace User.ActiveBeltTensioner
         public void LoadProfile(GameTuningProfile profile)
         {
             IsAutomaticallyTuning = false;
+
+            Persist?.Invoke();
 
             MinimumSurge = profile.MinimumSurge;
             MaximumSurge = profile.MaximumSurge;
