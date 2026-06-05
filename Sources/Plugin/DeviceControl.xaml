@@ -230,6 +230,8 @@
                                         <TextBlock TextWrapping="WrapWithOverflow" Margin="0,0,0,5">
                                             <Label Content="{SLoc SABT_Label_AutomaticTuning}" Margin="-5,0,0,0" />
                                             <styles:SHToggleCheckbox IsChecked="{Binding Settings.IsAutomaticallyTuning, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <Label Content="{SLoc SABT_Label_EnableMotors}" Margin="-5,0,0,0" />
+                                            <styles:SHToggleCheckbox IsChecked="{Binding Settings.IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding Settings.IsSerialPortValid}" />
                                         </TextBlock>
                                         <TextBlock TextWrapping="WrapWithOverflow" Margin="0,0,0,20" LineHeight="20" Text="{SLoc SABT_Text_Tuning}" />
                                     </StackPanel>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -55,11 +55,11 @@
       <HintPath>$(SIMHUB_INSTALL_PATH)\log4net.dll</HintPath>
       <Private>False</Private>
     </Reference>
-        <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>$(SIMHUB_INSTALL_PATH)\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-<Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+    <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(SIMHUB_INSTALL_PATH)\MahApps.Metro.dll</HintPath>
       <Private>False</Private>
