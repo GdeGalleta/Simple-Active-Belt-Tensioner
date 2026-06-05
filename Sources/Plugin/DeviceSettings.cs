@@ -74,6 +74,11 @@ namespace User.ActiveBeltTensioner
                 {
                     _isEnabled = value;
                     InvokePropertyChange(nameof(IsEnabled));
+
+                    if (_isEnabled)
+                    {
+                        IsAutomaticallyTuning = false;
+                    }
                 }
             }
         }
