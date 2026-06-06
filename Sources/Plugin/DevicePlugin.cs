@@ -125,6 +125,7 @@ namespace User.ActiveBeltTensioner
                 {
                     _currentVehicle = newValue;
                     OnPropertyChanged(nameof(CurrentVehicle));
+                    OnPropertyChanged(nameof(HasCurrentVehicle));
 
                     if (Settings != null && Settings.IsAutomaticallySwitching)
                     {
