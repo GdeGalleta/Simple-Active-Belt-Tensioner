@@ -355,6 +355,10 @@
 • Increasing the minimum will apply a constant tension and enhance acceleration and jumping effects
 • Reducing the maximum will result in a reduction of overall tension strength</value>
   </data>
+  <data name="SABT_Text_GainStep" xml:space="preserve">
+    <value>• How much the maximum tension changes with each Increase/Decrease Gain action
+• A step of 50 corresponds to a 5% change in overall gain</value>
+  </data>
   <data name="SABT_Text_LeftRightBias" xml:space="preserve">
     <value>• If tension feels unbalanced between sides, adjust this left or right to bias towards that side
 • Check and correct your belt path and contact points before resorting to using this setting</value>
@@ -403,6 +407,9 @@
   </data>
   <data name="SABT_Label_DrivingTension" xml:space="preserve">
     <value>Driving Tension</value>
+  </data>
+  <data name="SABT_Label_GainStep" xml:space="preserve">
+    <value>Gain Step</value>
   </data>
   <data name="SABT_Label_LeftRightBias" xml:space="preserve">
     <value>Left/Right Bias</value>

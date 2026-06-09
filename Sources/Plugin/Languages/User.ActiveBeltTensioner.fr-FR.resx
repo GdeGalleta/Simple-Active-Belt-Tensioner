@@ -355,6 +355,10 @@
 • Augmenter le minimum applique une tension constante et renforce les effets d'accélération et de saut
 • Réduire le maximum diminue l'intensité globale de tension</value>
   </data>
+  <data name="SABT_Text_GainStep" xml:space="preserve">
+    <value>• Variation de tension maximale pour chaque action Augmenter/Diminuer le gain
+• Un pas de 50 correspond à une variation de 5 % du gain global</value>
+  </data>
   <data name="SABT_Text_LeftRightBias" xml:space="preserve">
     <value>• Si la tension semble déséquilibrée, ajustez vers la gauche ou la droite
 • Vérifiez d'abord le cheminement de la ceinture et les points de contact avant d'utiliser ce réglage</value>
@@ -403,6 +407,9 @@
   </data>
   <data name="SABT_Label_DrivingTension" xml:space="preserve">
     <value>Tension en conduite</value>
+  </data>
+  <data name="SABT_Label_GainStep" xml:space="preserve">
+    <value>Pas de gain</value>
   </data>
   <data name="SABT_Label_LeftRightBias" xml:space="preserve">
     <value>Équilibre gauche/droite</value>

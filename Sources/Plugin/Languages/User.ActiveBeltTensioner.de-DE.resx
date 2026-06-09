@@ -355,6 +355,10 @@
 • Ein höheres Minimum erzeugt eine konstante Spannung und verstärkt Beschleunigungs- und Sprungeffekte
 • Ein niedrigeres Maximum reduziert die gesamte Spannungsstärke</value>
   </data>
+  <data name="SABT_Text_GainStep" xml:space="preserve">
+    <value>• Änderung der maximalen Spannung pro Aktion 'Verstärkung erhöhen/verringern'
+• Ein Schritt von 50 entspricht einer Änderung von 5 % der Gesamtverstärkung</value>
+  </data>
   <data name="SABT_Text_LeftRightBias" xml:space="preserve">
     <value>• Wenn die Spannung zwischen den Seiten unausgewogen wirkt, nach links oder rechts anpassen
 • Prüfen und korrigieren Sie zuerst den Gurtverlauf und die Kontaktpunkte, bevor Sie diese Einstellung verwenden</value>
@@ -403,6 +407,9 @@
   </data>
   <data name="SABT_Label_DrivingTension" xml:space="preserve">
     <value>Fahrspannung</value>
+  </data>
+  <data name="SABT_Label_GainStep" xml:space="preserve">
+    <value>Verstärkungsschritt</value>
   </data>
   <data name="SABT_Label_LeftRightBias" xml:space="preserve">
     <value>Links/Rechts-Balance</value>

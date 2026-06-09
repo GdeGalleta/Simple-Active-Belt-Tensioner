@@ -155,6 +155,20 @@ namespace User.ActiveBeltTensioner
             }
         }
 
+        private int _gainStep = 50;
+        public int GainStep
+        {
+            get { return _gainStep; }
+            set
+            {
+                if (_gainStep != value)
+                {
+                    _gainStep = Math.Max(value, 1);
+                    InvokePropertyChange(nameof(GainStep));
+                }
+            }
+        }
+
         private int _minimumSurge = -8;
         public int MinimumSurge
         {

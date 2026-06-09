@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
     xmlns:ui="clr-namespace:SimHub.Plugins.UI;assembly=SimHub.Plugins"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:oxy="http://oxyplot.org/wpf"
     d:DataContext="{d:DesignInstance Type=local:DeviceViewModel}"
     mc:Ignorable="d"
@@ -120,6 +121,11 @@
 
                                 <ui:TitledRangeSlider Title="{SLoc SABT_Label_DrivingTension}" Maximum="1000" Minimum="0" LowerValue="{Binding Settings.MinimumTension, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UpperValue="{Binding Settings.MaximumTension, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock LineHeight="20" TextWrapping="WrapWithOverflow" Margin="5,0,0,5" Text="{SLoc SABT_Text_DrivingTension}" />
+                                <DockPanel Margin="5,4,5,4">
+                                    <mah:NumericUpDown DockPanel.Dock="Right" Width="100" Minimum="10" Maximum="200" Value="{Binding Settings.GainStep, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock Text="{SLoc SABT_Label_GainStep}" VerticalAlignment="Center" />
+                                </DockPanel>
+                                <TextBlock LineHeight="20" TextWrapping="WrapWithOverflow" Margin="5,0,0,5" Text="{SLoc SABT_Text_GainStep}" />
 
                                 <styles:SHSectionSeparator />
 
