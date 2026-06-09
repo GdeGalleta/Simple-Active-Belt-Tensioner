@@ -355,6 +355,10 @@
 • Aumentare il minimo applica una tensione costante e migliora gli effetti di accelerazione e salti
 • Ridurre il massimo riduce l'intensità complessiva della tensione</value>
   </data>
+  <data name="SABT_Text_GainStep" xml:space="preserve">
+    <value>• Variazione della tensione massima per ogni azione Aumenta/Diminuisci guadagno
+• Un passo di 50 corrisponde a una variazione del 5% del guadagno complessivo</value>
+  </data>
   <data name="SABT_Text_LeftRightBias" xml:space="preserve">
     <value>• Se la tensione sembra sbilanciata tra i lati, regola verso sinistra o destra
 • Controlla e correggi il percorso della cintura e i punti di contatto prima di usare questa impostazione</value>
@@ -403,6 +407,9 @@
   </data>
   <data name="SABT_Label_DrivingTension" xml:space="preserve">
     <value>Tensione in guida</value>
+  </data>
+  <data name="SABT_Label_GainStep" xml:space="preserve">
+    <value>Passo guadagno</value>
   </data>
   <data name="SABT_Label_LeftRightBias" xml:space="preserve">
     <value>Bilanciamento sinistra/destra</value>

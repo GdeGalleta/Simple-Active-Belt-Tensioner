@@ -255,6 +255,28 @@ namespace User.ActiveBeltTensioner
                 }
             );
 
+            pluginManager.AddAction(
+                actionName: "SABT.IncreaseGain",
+                actionStart: (PluginManager manager, string input) => {
+                    Logging.Current.Info("SABT: Increasing gain from external input");
+                    Settings.MaximumTension = Math.Min(Settings.MaximumTension + Settings.GainStep, 1000);
+                    Settings.Persist?.Invoke();
+                }
+            );
+
+            pluginManager.AddAction(
+                actionName: "SABT.DecreaseGain",
+                actionStart: (PluginManager manager, string input) => {
+                    Logging.Current.Info("SABT: Decreasing gain from external input");
+                    Settings.MaximumTension -= Settings.GainStep;
+                    Settings.Persist?.Invoke();
+                }
+            );
+
+            // Expose Properties
+            pluginManager.AttachDelegate("SABT.MotorsAreEnabled", typeof(DevicePlugin), () => IsEnabled);
+            pluginManager.AttachDelegate("SABT.GlobalGain", typeof(DevicePlugin), () => Settings.MaximumTension / 10.0);
+
             // Initialise Motor Controller
             MotorController = new MotorController(this);
             if (IsEnabled && Settings.IsSerialPortValid)
