@@ -198,6 +198,9 @@
   <data name="SABT_Message_DeviceFailure" xml:space="preserve">
     <value>Le périphérique est introuvable ou les moteurs n'ont pas répondu. L'option « Activer les moteurs » a été désactivée automatiquement</value>
   </data>
+  <data name="SABT_Message_Setup_WaistCancelledIncomplete" xml:space="preserve">
+    <value>Setup was cancelled before the RIGHT WAIST MOTOR was configured. The left waist motor has already been assigned its identifier and cannot be reassigned until it is power-cycled. Power off all motors, then click 'Setup Motors' again to complete waist setup.</value>
+  </data>
   <data name="SABT_Plugin" xml:space="preserve">
     <value>Simple Active Belt Tensioner</value>
   </data>
@@ -440,5 +443,37 @@
   </data>
   <data name="SABT_Label_SmoothingFactor" xml:space="preserve">
     <value>Facteur de lissage</value>
+  <data name="SABT_Message_Setup_PlugInLeftWaistMotor" xml:space="preserve">
+    <value>Great, the RIGHT SHOULDER MOTOR has been configured. Now PLUG IN THE LEFT WAIST MOTOR, leaving the other motors still connected. Have you done this?</value>
+  </data>
+  <data name="SABT_Message_Setup_PlugInRightWaistMotor" xml:space="preserve">
+    <value>Great, the LEFT WAIST MOTOR has been configured. Now PLUG IN THE RIGHT WAIST MOTOR, leaving the other motors still connected. Have you done this?</value>
+  </data>
+  <data name="SABT_Message_Setup_FailedToSetLeftWaistMotor" xml:space="preserve">
+    <value>Failed to set identifier for the LEFT WAIST MOTOR. Please ensure it is plugged in and powered alongside the previously configured motors</value>
+  </data>
+  <data name="SABT_Message_Setup_FailedToSetRightWaistMotor" xml:space="preserve">
+    <value>Failed to set identifier for the RIGHT WAIST MOTOR. Please ensure all four motors are plugged in and powered</value>
+  </data>
+  <data name="SABT_Label_ShoulderMotors" xml:space="preserve">
+    <value>Shoulder Motors</value>
+  </data>
+  <data name="SABT_Label_WaistMotors" xml:space="preserve">
+    <value>Waist Motors</value>
+  </data>
+  <data name="SABT_Label_EnableWaistMotors" xml:space="preserve">
+    <value>Enable Waist Motors (4WD)</value>
+  </data>
+  <data name="SABT_Message_Setup_AreWaistMotorsPresent" xml:space="preserve">
+    <value>Do you have waist strap motors to set up? Select 'No' to complete setup with shoulder motors only.</value>
+  </data>
+  <data name="SABT_Message_Setup_Complete_ShouldersOnly" xml:space="preserve">
+    <value>Great, the RIGHT SHOULDER MOTOR has been configured. Both shoulder motors are now ready to go. You can add waist strap motors later by clicking 'Setup Motors' again.</value>
+  </data>
+  <data name="SABT_Slider_WaistTensionMultiplier" xml:space="preserve">
+    <value>Waist Motor Strength</value>
+  </data>
+  <data name="SABT_Label_WaistTensionMultiplier" xml:space="preserve">
+    <value>Scales the output of the waist strap motors relative to the shoulder strap motors (100 = identical strength).</value>
   </data>
 </root>

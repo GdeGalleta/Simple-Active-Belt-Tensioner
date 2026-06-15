@@ -209,7 +209,7 @@ namespace User.ActiveBeltTensioner
             /// <returns>Whether the motor responded as expected</returns>
             public bool Test(int times = 10, double testTorque = 0.4)
             {
-                SLoc.GetValue("SABT_Status_Testing");
+                Status = SLoc.GetValue("SABT_Status_Testing");
                 Graphic = MotorGraphic.Communicating;
 
                 if (!Query(true))
@@ -221,7 +221,7 @@ namespace User.ActiveBeltTensioner
                     return false;
                 }
 
-                int direction = (this == _controller.GetLeftMotor()) ? -1 : 1;
+                int direction = (this == _controller.GetLeftMotor() || this == _controller.GetLeftWaistMotor()) ? -1 : 1;
                 int good = 0;
                 int bad = 0;
 
@@ -298,6 +298,7 @@ namespace User.ActiveBeltTensioner
                 {
                     if (SetMode(_torqueMode))
                     {
+                        IsConnected = true;
                         Status = SLoc.GetValue("SABT_Status_IdentifierSet");
                         Graphic = MotorGraphic.Connected;
 
@@ -366,6 +367,16 @@ namespace User.ActiveBeltTensioner
         {
             get { return (_serialPort != null); }
         }
+        public bool IsWaistEnabled { // [4WD]
+            get { return GetLeftWaistMotor()?.IsConnected == true && GetRightWaistMotor()?.IsConnected == true; }
+        }
+        private bool ShouldersAreConnected =>
+            GetLeftMotor().IsConnected && GetRightMotor().IsConnected;
+        private bool WaistStateIsValid => // [4WD] true when both waist present (4WD) or both absent (2WD)
+            (GetLeftWaistMotor()?.IsConnected ?? false) == (GetRightWaistMotor()?.IsConnected ?? false);
+        public bool AllMotorsAreConnected { // [4WD]
+            get { return ShouldersAreConnected && WaistStateIsValid; }
+        }
         public bool BothMotorsAreConnected {
             get { return GetLeftMotor().IsConnected && GetRightMotor().IsConnected; }
         }
@@ -381,11 +392,23 @@ namespace User.ActiveBeltTensioner
         {
             get { return GetRightMotor()?.IsConnected ?? false; }
         }
+        public bool LeftWaistMotorIsConnected {
+            get { return GetLeftWaistMotor()?.IsConnected ?? false; }
+        }
+        public bool RightWaistMotorIsConnected {
+            get { return GetRightWaistMotor()?.IsConnected ?? false; }
+        }
         public string LeftMotorStatus {
             get { return GetLeftMotor()?.Status ?? SLoc.GetValue("SABT_Status_Disconnected"); }
         }
         public string RightMotorStatus {
             get { return GetRightMotor()?.Status ?? SLoc.GetValue("SABT_Status_Disconnected"); }
+        }
+        public string LeftWaistMotorStatus {
+            get { return GetLeftWaistMotor()?.Status ?? SLoc.GetValue("SABT_Status_Disconnected"); }
+        }
+        public string RightWaistMotorStatus {
+            get { return GetRightWaistMotor()?.Status ?? SLoc.GetValue("SABT_Status_Disconnected"); }
         }
         public string LeftMotorGraphic
         {
@@ -394,6 +417,12 @@ namespace User.ActiveBeltTensioner
         public string RightMotorGraphic
         {
             get { return GetRightMotor()?.Graphic ?? MotorGraphic.Disconnected; }
+        }
+        public string LeftWaistMotorGraphic {
+            get { return GetLeftWaistMotor()?.Graphic ?? MotorGraphic.Disconnected; }
+        }
+        public string RightWaistMotorGraphic {
+            get { return GetRightWaistMotor()?.Graphic ?? MotorGraphic.Disconnected; }
         }
 
         private string[] _serialPorts = new string[0];
@@ -419,6 +448,9 @@ namespace User.ActiveBeltTensioner
         private bool _hasNotifiedOfLicense = false;
 
         private bool _motorCommandSwitch = true;
+        private int _motorCommandIndex = 0; // [4WD]
+        private bool _hadWaistMotors = false; // [4WD] set when any waist motor connects; reset on Disconnect
+        private bool _wasWaistEnabled = false; // [4WD] tracks previous IsWaistEnabled to detect mode transitions
 
         private readonly long _motorCommandTicks;
         private long _lastCommandTicks = 0;
@@ -429,7 +461,9 @@ namespace User.ActiveBeltTensioner
 
             Motors = new Motor[] {
                 new Motor(this, 0x01, "Left"),
-                new Motor(this, 0x02, "Right")
+                new Motor(this, 0x02, "Right"),
+                new Motor(this, 0x03, "LeftWaist"),
+                new Motor(this, 0x04, "RightWaist")
             };
 
             foreach (Motor motor in Motors)
@@ -448,95 +482,108 @@ namespace User.ActiveBeltTensioner
 
             InvokePropertyChange($"{motor.Label}Motor{e.PropertyName}");
 
+            InvokePropertyChange(nameof(AllMotorsAreConnected));
             InvokePropertyChange(nameof(BothMotorsAreConnected));
             InvokePropertyChange(nameof(OneMotorIsConnected));
+            InvokePropertyChange(nameof(IsWaistEnabled)); // [4WD]
+
+            if (GetLeftWaistMotor()?.IsConnected == true || GetRightWaistMotor()?.IsConnected == true) // [4WD]
+                _hadWaistMotors = true;
+
+            bool nowWaistEnabled = IsWaistEnabled; // [4WD] reset counters on mode transition to avoid desync
+            if (nowWaistEnabled != _wasWaistEnabled)
+            {
+                _motorCommandIndex = 0;
+                _motorCommandSwitch = true;
+                _wasWaistEnabled = nowWaistEnabled;
+            }
         }
 
         /// <summary>Performs the motor configuration process via a series of guided prompts</summary>
         /// <returns>Whether the process succeeded</returns>
         public bool Setup()
         {
-            if (_serialPort == null)
+            StartAction(out string action);
+
+            try
             {
-                MessageBox.Show(
-                    SLoc.GetValue("SABT_Message_NoDeviceDetected"),
-                    SLoc.GetValue("SABT_Plugin"),
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Exclamation
-                );
+                if (_serialPort == null)
+                {
+                    MessageBox.Show(
+                        SLoc.GetValue("SABT_Message_NoDeviceDetected"),
+                        SLoc.GetValue("SABT_Plugin"),
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation
+                    );
 
-                return false;
-            }
+                    return false;
+                }
 
-            if (GetLeftMotor().IsConnected && GetRightMotor().IsConnected)
-            {
-                MessageBox.Show(
-                    SLoc.GetValue("SABT_Message_Setup_AlreadySetUp"),
-                    SLoc.GetValue("SABT_Plugin"),
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Exclamation
-                );
+                if (ShouldersAreConnected && IsWaistEnabled)
+                {
+                    MessageBox.Show(
+                        SLoc.GetValue("SABT_Message_Setup_AlreadySetUp"),
+                        SLoc.GetValue("SABT_Plugin"),
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Exclamation
+                    );
 
-                return false;
-            }
+                    return false;
+                }
 
-            Motor leftMotor = GetLeftMotor();
-            Motor rightMotor = GetRightMotor();
+                if (ShouldersAreConnected)
+                {
+                    if (
+                        MessageBox.Show(
+                            SLoc.GetValue("SABT_Message_Setup_AreWaistMotorsPresent"),
+                            SLoc.GetValue("SABT_Plugin"),
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question
+                        ) == MessageBoxResult.Yes
+                    )
+                    {
+                        return SetupWaistMotors();
+                    }
 
-            leftMotor.Status = SLoc.GetValue("SABT_Status_Disconnected");
-            leftMotor.Graphic = MotorGraphic.Disconnected;
+                    return false;
+                }
 
-            rightMotor.Status = SLoc.GetValue("SABT_Status_Disconnected");
-            rightMotor.Graphic = MotorGraphic.Disconnected;
+                Motor leftMotor = GetLeftMotor();
+                Motor rightMotor = GetRightMotor();
 
-            if (
-                MessageBox.Show(
-                    SLoc.GetValue("SABT_Message_Setup_TurnOffPower"),
-                    SLoc.GetValue("SABT_Plugin"),
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Information
-                ) == MessageBoxResult.Yes
-            ) {
-                leftMotor.Status = SLoc.GetValue("SABT_Status_AwaitingConnection");
-                leftMotor.Graphic = MotorGraphic.Connect;
+                leftMotor.Status = SLoc.GetValue("SABT_Status_Disconnected");
+                leftMotor.Graphic = MotorGraphic.Disconnected;
+
+                rightMotor.Status = SLoc.GetValue("SABT_Status_Disconnected");
+                rightMotor.Graphic = MotorGraphic.Disconnected;
 
                 if (
                     MessageBox.Show(
-                        SLoc.GetValue("SABT_Message_Setup_PlugInLeftMotor"),
+                        SLoc.GetValue("SABT_Message_Setup_TurnOffPower"),
                         SLoc.GetValue("SABT_Plugin"),
                         MessageBoxButton.YesNoCancel,
                         MessageBoxImage.Information
                     ) == MessageBoxResult.Yes
-                )
-                {
-                    if (!GetLeftMotor().SetIdentifier())
-                    {
-                        MessageBox.Show(
-                            SLoc.GetValue("SABT_Message_Setup_FailToSetLeftMotor"),
-                            SLoc.GetValue("SABT_Plugin"),
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error
-                        );
-
-                        return false;
-                    }
-
-                    rightMotor.Status = SLoc.GetValue("SABT_Status_AwaitingConnection");
-                    rightMotor.Graphic = MotorGraphic.Connect;
+                ) {
+                    leftMotor.Status = SLoc.GetValue("SABT_Status_AwaitingConnection");
+                    leftMotor.Graphic = MotorGraphic.Connect;
 
                     if (
                         MessageBox.Show(
-                            SLoc.GetValue("SABT_Message_Setup_PlugInRightMotor"),
+                            SLoc.GetValue("SABT_Message_Setup_PlugInLeftMotor"),
                             SLoc.GetValue("SABT_Plugin"),
                             MessageBoxButton.YesNoCancel,
                             MessageBoxImage.Information
                         ) == MessageBoxResult.Yes
                     )
                     {
-                        if (!GetRightMotor().SetIdentifier())
+                        // The board was just powered back on; reopen the serial port if it closed
+                        if (!_serialPort.IsOpen) { Connect(); }
+
+                        if (!leftMotor.SetIdentifier())
                         {
                             MessageBox.Show(
-                                SLoc.GetValue("SABT_Message_Setup_FailToSetLeftMotor"),
+                                SLoc.GetValue("SABT_Message_Setup_FailedToSetLeftMotor"),
                                 SLoc.GetValue("SABT_Plugin"),
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Error
@@ -545,16 +592,126 @@ namespace User.ActiveBeltTensioner
                             return false;
                         }
 
-                        MessageBox.Show(
-                            SLoc.GetValue("SABT_Message_Setup_Complete"),
-                            SLoc.GetValue("SABT_Plugin"),
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information
-                        );
+                        rightMotor.Status = SLoc.GetValue("SABT_Status_AwaitingConnection");
+                        rightMotor.Graphic = MotorGraphic.Connect;
 
-                        return true;
+                        if (
+                            MessageBox.Show(
+                                SLoc.GetValue("SABT_Message_Setup_PlugInRightMotor"),
+                                SLoc.GetValue("SABT_Plugin"),
+                                MessageBoxButton.YesNoCancel,
+                                MessageBoxImage.Information
+                            ) == MessageBoxResult.Yes
+                        )
+                        {
+                            if (!rightMotor.SetIdentifier())
+                            {
+                                MessageBox.Show(
+                                    SLoc.GetValue("SABT_Message_Setup_FailedToSetRightMotor"),
+                                    SLoc.GetValue("SABT_Plugin"),
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error
+                                );
+
+                                return false;
+                            }
+
+                            bool wantsWaistMotors = MessageBox.Show(
+                                SLoc.GetValue("SABT_Message_Setup_AreWaistMotorsPresent"),
+                                SLoc.GetValue("SABT_Plugin"),
+                                MessageBoxButton.YesNo,
+                                MessageBoxImage.Question
+                            ) == MessageBoxResult.Yes;
+
+                            if (wantsWaistMotors && !SetupWaistMotors()) return false;
+
+                            MessageBox.Show(
+                                SLoc.GetValue(wantsWaistMotors
+                                    ? "SABT_Message_Setup_Complete"
+                                    : "SABT_Message_Setup_Complete_ShouldersOnly"),
+                                SLoc.GetValue("SABT_Plugin"),
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information
+                            );
+
+                            return true;
+                        }
                     }
                 }
+
+                return false;
+            }
+            finally
+            {
+                EndAction(action);
+            }
+        }
+
+        // [4WD] Performs the waist motor configuration steps, continuing from the shoulder motor setup
+        private bool SetupWaistMotors()
+        {
+            Motor leftWaistMotor = GetLeftWaistMotor();
+            Motor rightWaistMotor = GetRightWaistMotor();
+
+            leftWaistMotor.Status = SLoc.GetValue("SABT_Status_AwaitingConnection");
+            leftWaistMotor.Graphic = MotorGraphic.Connect;
+
+            if (
+                MessageBox.Show(
+                    SLoc.GetValue("SABT_Message_Setup_PlugInLeftWaistMotor"),
+                    SLoc.GetValue("SABT_Plugin"),
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Information
+                ) == MessageBoxResult.Yes
+            )
+            {
+                if (!_serialPort.IsOpen) { Connect(); }
+
+                if (!leftWaistMotor.SetIdentifier())
+                {
+                    MessageBox.Show(
+                        SLoc.GetValue("SABT_Message_Setup_FailedToSetLeftWaistMotor"),
+                        SLoc.GetValue("SABT_Plugin"),
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error
+                    );
+
+                    return false;
+                }
+
+                rightWaistMotor.Status = SLoc.GetValue("SABT_Status_AwaitingConnection");
+                rightWaistMotor.Graphic = MotorGraphic.Connect;
+
+                if (
+                    MessageBox.Show(
+                        SLoc.GetValue("SABT_Message_Setup_PlugInRightWaistMotor"),
+                        SLoc.GetValue("SABT_Plugin"),
+                        MessageBoxButton.YesNoCancel,
+                        MessageBoxImage.Information
+                    ) == MessageBoxResult.Yes
+                )
+                {
+                    if (!rightWaistMotor.SetIdentifier())
+                    {
+                        MessageBox.Show(
+                            SLoc.GetValue("SABT_Message_Setup_FailedToSetRightWaistMotor"),
+                            SLoc.GetValue("SABT_Plugin"),
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
+
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                MessageBox.Show(
+                    SLoc.GetValue("SABT_Message_Setup_WaistCancelledIncomplete"),
+                    SLoc.GetValue("SABT_Plugin"),
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                );
             }
 
             return false;
@@ -672,16 +829,14 @@ namespace User.ActiveBeltTensioner
 
             StartAction(out string action);
 
-            bool didConnect = true;
-
             foreach (Motor motor in Motors)
             {
-                didConnect = motor.Check() && didConnect;
+                motor.Check();
             }
 
             EndAction(action);
 
-            return didConnect;
+            return AllMotorsAreConnected;
         }
 
         /// <summary>Invokes the <see cref="Motor.Stop()" /> method on each motor then closes the serial port</summary>
@@ -693,10 +848,15 @@ namespace User.ActiveBeltTensioner
             {
                 if (_serialPort != null && _serialPort.IsOpen)
                 {
-                    foreach (Motor motor in Motors)
+                    IEnumerable<Motor> motorsToStop = _hadWaistMotors ? Motors : Motors.Take(2); // [4WD]
+
+                    foreach (Motor motor in motorsToStop)
                     {
                         motor.Stop();
                     }
+
+                    _hadWaistMotors = false; // [4WD] reset so next 2WD session doesn't send stop to absent motors
+                    _wasWaistEnabled = false;
 
                     try
                     {
@@ -719,7 +879,7 @@ namespace User.ActiveBeltTensioner
             Disconnect();
         }
 
-        /// <summary>Sends the given torque values (as fractions of maximum torque) to the two motors, alternating between motors at 30Hz per motor (60Hz overall)</summary>
+        /// <summary>Sends the given torque values (as fractions of maximum torque) to the motors, alternating between motors at 30Hz per motor (60Hz overall); or 15Hz per motor when waist motors are enabled</summary>
         /// <returns>Whether the motor commands were sent successfully (if applicable)</returns>
         public bool SetTorques(double left, double right, double smoothingFactor = 0.0)
         {
@@ -737,12 +897,27 @@ namespace User.ActiveBeltTensioner
 
             if (currentTicks - _lastCommandTicks >= _motorCommandTicks)
             {
-                didSet = _motorCommandSwitch
-                    ? GetLeftMotor().SetTorque(left, smoothingFactor)
-                    : GetRightMotor().SetTorque(right * -1, smoothingFactor);
+                if (IsWaistEnabled) // [4WD]
+                {
+                    double waistScale = _plugin.Settings.WaistTensionMultiplier / 100.0; // [4WD]
+                    switch (_motorCommandIndex)
+                    {
+                        case 0: didSet = GetLeftMotor().SetTorque(left, smoothingFactor); break;
+                        case 1: didSet = GetRightMotor().SetTorque(right * -1, smoothingFactor); break;
+                        case 2: didSet = GetLeftWaistMotor().SetTorque(left * waistScale, smoothingFactor); break;        // [4WD]
+                        case 3: didSet = GetRightWaistMotor().SetTorque(right * -1 * waistScale, smoothingFactor); break; // [4WD]
+                    }
+                    _motorCommandIndex = (_motorCommandIndex + 1) % 4;
+                }
+                else
+                {
+                    didSet = _motorCommandSwitch
+                        ? GetLeftMotor().SetTorque(left, smoothingFactor)
+                        : GetRightMotor().SetTorque(right * -1, smoothingFactor);
+                    _motorCommandSwitch = !_motorCommandSwitch;
+                }
 
                 _lastCommandTicks = currentTicks;
-                _motorCommandSwitch = !_motorCommandSwitch;
             }
 
             EndAction(action);
@@ -770,6 +945,34 @@ namespace User.ActiveBeltTensioner
             foreach (Motor motor in Motors)
             {
                 if (motor.Label == (_plugin.Settings.IsFlipped ? "Left" : "Right"))
+                {
+                    return motor;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Provides the motor instance currently mapped to the `left waist` channel</summary>
+        public Motor GetLeftWaistMotor()
+        {
+            foreach (Motor motor in Motors)
+            {
+                if (motor.Label == (_plugin.Settings.IsFlipped ? "RightWaist" : "LeftWaist"))
+                {
+                    return motor;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>Provides the motor instance currently mapped to the `right waist` channel</summary>
+        public Motor GetRightWaistMotor()
+        {
+            foreach (Motor motor in Motors)
+            {
+                if (motor.Label == (_plugin.Settings.IsFlipped ? "LeftWaist" : "RightWaist"))
                 {
                     return motor;
                 }

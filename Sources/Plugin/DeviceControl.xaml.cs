@@ -187,6 +187,32 @@ namespace User.ActiveBeltTensioner
             );
         }
 
+        private void TestLeftWaistMotor(object sender, RoutedEventArgs e)
+        {
+            _plugin.DoWithoutWaiting(
+                devicePlugin =>
+                {
+                    if (!devicePlugin.MotorController.IsBusy)
+                    {
+                        devicePlugin.MotorController.GetLeftWaistMotor()?.Test();
+                    }
+                }
+            );
+        }
+
+        private void TestRightWaistMotor(object sender, RoutedEventArgs e)
+        {
+            _plugin.DoWithoutWaiting(
+                devicePlugin =>
+                {
+                    if (!devicePlugin.MotorController.IsBusy)
+                    {
+                        devicePlugin.MotorController.GetRightWaistMotor()?.Test();
+                    }
+                }
+            );
+        }
+
         private void SetupMotors(object sender, RoutedEventArgs e)
         {
             _plugin.DoWithoutWaiting(

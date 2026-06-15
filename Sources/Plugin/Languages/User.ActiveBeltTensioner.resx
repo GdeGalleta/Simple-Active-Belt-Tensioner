@@ -175,28 +175,64 @@
     <value>A profile for this combination of game a vehicle already exists</value>
   </data>
   <data name="SABT_Message_Setup_Complete" xml:space="preserve">
-    <value>Great, the RIGHT MOTOR has been configured. Both motors are now ready to go...</value>
+    <value>Great, the RIGHT WAIST MOTOR has been configured. All four motors are now ready to go...</value>
   </data>
   <data name="SABT_Message_Setup_PlugInLeftMotor" xml:space="preserve">
-    <value>Now we need to PLUG IN THE LEFT MOTOR ONLY. Any of the ports on the controller will do. Once connected, plug in the power. Have you done this?</value>
+    <value>Now we need to PLUG IN THE LEFT SHOULDER MOTOR ONLY. Any of the ports on the controller will do. Once connected, plug in the power. Have you done this?</value>
   </data>
   <data name="SABT_Message_Setup_PlugInRightMotor" xml:space="preserve">
-    <value>Great, the LEFT MOTOR has been configured. Now PLUG IN THE RIGHT MOTOR, leaving the other motor still connected. Have you done this?</value>
+    <value>Great, the LEFT SHOULDER MOTOR has been configured. Now PLUG IN THE RIGHT SHOULDER MOTOR, leaving the other motor still connected. Have you done this?</value>
+  </data>
+  <data name="SABT_Message_Setup_PlugInLeftWaistMotor" xml:space="preserve">
+    <value>Great, the RIGHT SHOULDER MOTOR has been configured. Now PLUG IN THE LEFT WAIST MOTOR, leaving the other motors still connected. Have you done this?</value>
+  </data>
+  <data name="SABT_Message_Setup_PlugInRightWaistMotor" xml:space="preserve">
+    <value>Great, the LEFT WAIST MOTOR has been configured. Now PLUG IN THE RIGHT WAIST MOTOR, leaving the other motors still connected. Have you done this?</value>
+  </data>
+  <data name="SABT_Message_Setup_FailedToSetLeftWaistMotor" xml:space="preserve">
+    <value>Failed to set identifier for the LEFT WAIST MOTOR. Please ensure it is plugged in and powered alongside the previously configured motors</value>
+  </data>
+  <data name="SABT_Message_Setup_FailedToSetRightWaistMotor" xml:space="preserve">
+    <value>Failed to set identifier for the RIGHT WAIST MOTOR. Please ensure all four motors are plugged in and powered</value>
   </data>
   <data name="SABT_Message_Setup_AlreadySetUp" xml:space="preserve">
-    <value>You appear to already be set up correctly (both motors are connected)!</value>
+    <value>You appear to already be set up correctly (all four motors are connected)!</value>
   </data>
   <data name="SABT_Message_Setup_FailedToSetLeftMotor" xml:space="preserve">
-    <value>Failed to set identifier for the LEFT MOTOR. Please ensure only one motor is plugged in and powered</value>
+    <value>Failed to set identifier for the LEFT SHOULDER MOTOR. Please ensure only one motor is plugged in and powered</value>
   </data>
   <data name="SABT_Message_Setup_FailedToSetRightMotor" xml:space="preserve">
-    <value>Failed to set identifier for the RIGHT MOTOR. Please ensure both motors are plugged in and powered</value>
+    <value>Failed to set identifier for the RIGHT SHOULDER MOTOR. Please ensure both shoulder motors are plugged in and powered</value>
+  </data>
+  <data name="SABT_Label_ShoulderMotors" xml:space="preserve">
+    <value>Shoulder Motors</value>
+  </data>
+  <data name="SABT_Label_WaistMotors" xml:space="preserve">
+    <value>Waist Motors</value>
+  </data>
+  <data name="SABT_Label_EnableWaistMotors" xml:space="preserve">
+    <value>Enable Waist Motors (4WD)</value>
+  </data>
+  <data name="SABT_Message_Setup_AreWaistMotorsPresent" xml:space="preserve">
+    <value>Do you have waist strap motors to set up? Select 'No' to complete setup with shoulder motors only.</value>
+  </data>
+  <data name="SABT_Message_Setup_Complete_ShouldersOnly" xml:space="preserve">
+    <value>Great, the RIGHT SHOULDER MOTOR has been configured. Both shoulder motors are now ready to go. You can add waist strap motors later by clicking 'Setup Motors' again.</value>
+  </data>
+  <data name="SABT_Slider_WaistTensionMultiplier" xml:space="preserve">
+    <value>Waist Motor Strength</value>
+  </data>
+  <data name="SABT_Label_WaistTensionMultiplier" xml:space="preserve">
+    <value>Scales the output of the waist strap motors relative to the shoulder strap motors (100 = identical strength).</value>
   </data>
   <data name="SABT_Message_NoDeviceDetected" xml:space="preserve">
     <value>No device detected. You must select a serial device before performing setup!</value>
   </data>
   <data name="SABT_Message_DeviceFailure" xml:space="preserve">
     <value>The device could not be found, or motors did not respond. The 'Enable Motors' option has been automatically switched off</value>
+  </data>
+  <data name="SABT_Message_Setup_WaistCancelledIncomplete" xml:space="preserve">
+    <value>Setup was cancelled before the RIGHT WAIST MOTOR was configured. The left waist motor has already been assigned its identifier and cannot be reassigned until it is power-cycled. Power off all motors, then click 'Setup Motors' again to complete waist setup.</value>
   </data>
   <data name="SABT_Plugin" xml:space="preserve">
     <value>Simple Active Belt Tensioner</value>

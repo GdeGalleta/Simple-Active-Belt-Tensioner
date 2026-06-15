@@ -362,6 +362,21 @@ namespace User.ActiveBeltTensioner
             }
         }
 
+        // [4WD]
+        private int _waistTensionMultiplier = 100;
+        public int WaistTensionMultiplier
+        {
+            get { return _waistTensionMultiplier; }
+            set
+            {
+                if (_waistTensionMultiplier != value)
+                {
+                    _waistTensionMultiplier = value;
+                    InvokePropertyChange(nameof(WaistTensionMultiplier));
+                }
+            }
+        }
+
         private int _shiftingStrength = 0;
         public int ShiftingStrength
         {
