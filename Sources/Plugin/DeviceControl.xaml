@@ -158,6 +158,15 @@
                                 <!-- [4WD] -->
                                 <StackPanel Visibility="{Binding MotorController.IsWaistEnabled, Converter={StaticResource BoolToVis}}">
                                     <styles:SHSectionSeparator />
+                                    <DockPanel Margin="5,4,5,4">
+                                        <ComboBox DockPanel.Dock="Right" Width="185" SelectedIndex="{Binding Settings.WaistModeIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ComboBoxItem Content="{SLoc SABT_WaistMode_Static}" />
+                                            <ComboBoxItem Content="{SLoc SABT_WaistMode_Parallel}" />
+                                            <ComboBoxItem Content="{SLoc SABT_WaistMode_Cross}" />
+                                            <ComboBoxItem Content="{SLoc SABT_WaistMode_Symmetric}" />
+                                        </ComboBox>
+                                        <TextBlock Text="{SLoc SABT_Label_WaistMode}" VerticalAlignment="Center" />
+                                    </DockPanel>
                                     <ui:TitledSlider Title="{SLoc SABT_Slider_WaistTensionMultiplier}" Maximum="200" Minimum="0" Value="{Binding Settings.WaistTensionMultiplier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     <TextBlock LineHeight="20" TextWrapping="WrapWithOverflow" Margin="5,0,0,5" Text="{SLoc SABT_Label_WaistTensionMultiplier}" />
                                 </StackPanel>

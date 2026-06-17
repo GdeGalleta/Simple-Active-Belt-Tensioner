@@ -13,6 +13,8 @@ using WoteverLocalization;
 
 namespace User.ActiveBeltTensioner
 {
+    public enum WaistMode { Static = 0, Parallel = 1, Cross = 2, Symmetric = 3 }
+
     public class DeviceSettings : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -363,6 +365,28 @@ namespace User.ActiveBeltTensioner
         }
 
         // [4WD]
+        private WaistMode _waistMode = WaistMode.Static;
+        public WaistMode WaistMode
+        {
+            get { return _waistMode; }
+            set
+            {
+                if (_waistMode != value)
+                {
+                    _waistMode = value;
+                    InvokePropertyChange(nameof(WaistMode));
+                    InvokePropertyChange(nameof(WaistModeIndex));
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public int WaistModeIndex
+        {
+            get { return (int)_waistMode; }
+            set { WaistMode = (WaistMode)value; }
+        }
+
         private int _waistTensionMultiplier = 100;
         public int WaistTensionMultiplier
         {

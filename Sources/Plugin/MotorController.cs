@@ -879,6 +879,18 @@ namespace User.ActiveBeltTensioner
             Disconnect();
         }
 
+        private (double waistLeft, double waistRight) ComputeWaistTorques(double left, double right, double scale)
+        {
+            switch (_plugin.Settings.WaistMode)
+            {
+                case WaistMode.Parallel:  return (left * scale,              right * -1 * scale);
+                case WaistMode.Cross:     return (right * scale,             left  * -1 * scale);
+                case WaistMode.Symmetric: double avg = (left + right) / 2.0;
+                                          return (avg * scale,               avg   * -1 * scale);
+                default:                  return (0, 0); // Static
+            }
+        }
+
         /// <summary>Sends the given torque values (as fractions of maximum torque) to the motors, alternating between motors at 30Hz per motor (60Hz overall); or 15Hz per motor when waist motors are enabled</summary>
         /// <returns>Whether the motor commands were sent successfully (if applicable)</returns>
         public bool SetTorques(double left, double right, double smoothingFactor = 0.0)
@@ -899,13 +911,14 @@ namespace User.ActiveBeltTensioner
             {
                 if (IsWaistEnabled) // [4WD]
                 {
-                    double waistScale = _plugin.Settings.WaistTensionMultiplier / 100.0; // [4WD]
+                    double waistScale = _plugin.Settings.WaistTensionMultiplier / 100.0;
+                    (double waistLeft, double waistRight) = ComputeWaistTorques(left, right, waistScale);
                     switch (_motorCommandIndex)
                     {
                         case 0: didSet = GetLeftMotor().SetTorque(left, smoothingFactor); break;
                         case 1: didSet = GetRightMotor().SetTorque(right * -1, smoothingFactor); break;
-                        case 2: didSet = GetLeftWaistMotor().SetTorque(left * waistScale, smoothingFactor); break;        // [4WD]
-                        case 3: didSet = GetRightWaistMotor().SetTorque(right * -1 * waistScale, smoothingFactor); break; // [4WD]
+                        case 2: didSet = GetLeftWaistMotor().SetTorque(waistLeft, smoothingFactor); break;
+                        case 3: didSet = GetRightWaistMotor().SetTorque(waistRight, smoothingFactor); break;
                     }
                     _motorCommandIndex = (_motorCommandIndex + 1) % 4;
                 }
