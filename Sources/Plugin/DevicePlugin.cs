@@ -469,6 +469,9 @@ namespace User.ActiveBeltTensioner
             double[] telemetryHeaveBuffer = new double[telemetryBufferSize];
             int telemetryBufferIndex = 0;
 
+            // [4WD] Persisted EMA of the waist's vertical (kerb/crest/landing) channel for the Dynamic waist mode
+            double smoothedWaistVertical = 0.0;
+
             while (_runControlLoop)
             {
                 if (!_runControlLoop)
@@ -538,6 +541,21 @@ namespace User.ActiveBeltTensioner
                     increasingModifierRight = Math.Max(increasingModifierRight, (landing * landingStrength));
                     increasingModifierLeft = Math.Max(increasingModifierLeft, (sway <= 0.0) ? (Math.Abs(sway * corneringStrength)) : 0.0);
                     increasingModifierRight = Math.Max(increasingModifierRight, (sway > 0.0) ? (Math.Abs(sway * corneringStrength)) : 0.0);
+
+                    // [4WD] Waist physics channel for the Dynamic mode: short impulses from the car's g-vector
+                    // (anti-submarining under braking, kerbs/crests/landings, lateral) rather than the shoulder
+                    // targets. The vertical channel is EMA-smoothed to keep the lap belt from buzzing over bumps.
+                    double waistVertical = Math.Max(landing * landingStrength, jumping * jumpingStrength);
+                    smoothedWaistVertical = (waistVertical * (1.0 - smoothingFactor)) + (smoothedWaistVertical * smoothingFactor);
+                    double waistPhysicsActive = Math.Max(
+                        braking * brakingStrength,
+                        Math.Max(smoothedWaistVertical, Math.Abs(sway) * corneringStrength)
+                    );
+
+                    // [4WD] The waist's resting tension tracks the shoulders': idle tension when stopped,
+                    // minimum driving tension when moving. Keeps the lap belt from sitting firmer than the
+                    // shoulder belts in the pits/menus when idle tension is below the minimum driving tension.
+                    double waistRestingTension = isMoving ? minimumTension : idleTension;
 
                     // Combinator
                     double totalModifierLeft = increasingModifierLeft - decreasingModifierLeft;
@@ -660,7 +678,7 @@ namespace User.ActiveBeltTensioner
                     // Send To Motors
                     if (!motorController.IsBusy && motorController.HasSerial)
                     {
-                        if (!motorController.SetTorques(leftTarget, rightTarget, smoothingFactor))
+                        if (!motorController.SetTorques(leftTarget, rightTarget, smoothingFactor, waistRestingTension, waistPhysicsActive))
                         {
                             Logging.Current.Warn("SABT: Exceeded motor communication failure limit (disabling plugin)");
 

@@ -879,9 +879,30 @@ namespace User.ActiveBeltTensioner
             Disconnect();
         }
 
+        // [4WD] All modes are symmetric (equal magnitude, right negated -> zero lateral pull). Waist tension is
+        // based on the shoulders' active load above the resting baseline (or the car's g-vector, for Dynamic),
+        // never dropping below the resting tension so the lap belt stays snug without holding a high, motor-cooking current.
+        private (double waistLeft, double waistRight) ComputeWaistTorques(double left, double right, double scale, double restingTension, double physicsActive)
+        {
+            double activeLeft = Math.Max(0.0, left - restingTension);
+            double activeRight = Math.Max(0.0, right - restingTension);
+
+            double active;
+            switch (_plugin.Settings.WaistMode)
+            {
+                case WaistMode.Firm:    active = Math.Max(activeLeft, activeRight);  break;
+                case WaistMode.Dynamic: active = physicsActive;                      break;
+                default:                active = (activeLeft + activeRight) / 2.0;   break; // Balanced
+            }
+
+            double magnitude = Math.Max(restingTension, active * scale);
+
+            return (magnitude, magnitude * -1);
+        }
+
         /// <summary>Sends the given torque values (as fractions of maximum torque) to the motors, alternating between motors at 30Hz per motor (60Hz overall); or 15Hz per motor when waist motors are enabled</summary>
         /// <returns>Whether the motor commands were sent successfully (if applicable)</returns>
-        public bool SetTorques(double left, double right, double smoothingFactor = 0.0)
+        public bool SetTorques(double left, double right, double smoothingFactor = 0.0, double restingTension = 0.0, double physicsActive = 0.0)
         {
             StartAction(out string action);
 
@@ -899,13 +920,14 @@ namespace User.ActiveBeltTensioner
             {
                 if (IsWaistEnabled) // [4WD]
                 {
-                    double waistScale = _plugin.Settings.WaistTensionMultiplier / 100.0; // [4WD]
+                    double waistScale = _plugin.Settings.WaistTensionMultiplier / 100.0;
+                    (double waistLeft, double waistRight) = ComputeWaistTorques(left, right, waistScale, restingTension, physicsActive);
                     switch (_motorCommandIndex)
                     {
                         case 0: didSet = GetLeftMotor().SetTorque(left, smoothingFactor); break;
                         case 1: didSet = GetRightMotor().SetTorque(right * -1, smoothingFactor); break;
-                        case 2: didSet = GetLeftWaistMotor().SetTorque(left * waistScale, smoothingFactor); break;        // [4WD]
-                        case 3: didSet = GetRightWaistMotor().SetTorque(right * -1 * waistScale, smoothingFactor); break; // [4WD]
+                        case 2: didSet = GetLeftWaistMotor().SetTorque(waistLeft, smoothingFactor); break;
+                        case 3: didSet = GetRightWaistMotor().SetTorque(waistRight, smoothingFactor); break;
                     }
                     _motorCommandIndex = (_motorCommandIndex + 1) % 4;
                 }

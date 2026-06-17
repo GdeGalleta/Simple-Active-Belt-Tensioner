@@ -13,6 +13,10 @@ using WoteverLocalization;
 
 namespace User.ActiveBeltTensioner
 {
+    // All modes are symmetric (equal magnitude both sides); the name reflects the feel/derivation:
+    // Firm = peak active shoulder load, Balanced = average, Dynamic = the car's g-vector.
+    public enum WaistMode { Firm = 0, Balanced = 1, Dynamic = 2 }
+
     public class DeviceSettings : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -363,6 +367,40 @@ namespace User.ActiveBeltTensioner
         }
 
         // [4WD]
+        private WaistMode _waistMode = WaistMode.Balanced;
+        public WaistMode WaistMode
+        {
+            get { return _waistMode; }
+            set
+            {
+                // Reject undefined values so a pre-release profile holding the old 0-3 enum
+                // (e.g. the removed Cross = 2 / Symmetric = 3) falls back to the default rather than a non-existent mode
+                if (!Enum.IsDefined(typeof(WaistMode), value))
+                {
+                    value = WaistMode.Balanced;
+                }
+
+                if (_waistMode != value)
+                {
+                    _waistMode = value;
+                    InvokePropertyChange(nameof(WaistMode));
+                    InvokePropertyChange(nameof(WaistModeIndex));
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public int WaistModeIndex
+        {
+            get { return (int)_waistMode; }
+            set
+            {
+                // Clamp so pre-release profiles holding the old 0-3 index don't select a non-existent mode
+                int clamped = Math.Min(Math.Max(value, (int)WaistMode.Firm), (int)WaistMode.Dynamic);
+                WaistMode = (WaistMode)clamped;
+            }
+        }
+
         private int _waistTensionMultiplier = 100;
         public int WaistTensionMultiplier
         {

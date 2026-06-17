@@ -470,6 +470,18 @@
   <data name="SABT_Message_Setup_Complete_ShouldersOnly" xml:space="preserve">
     <value>Great, the RIGHT SHOULDER MOTOR has been configured. Both shoulder motors are now ready to go. You can add waist strap motors later by clicking 'Setup Motors' again.</value>
   </data>
+  <data name="SABT_Label_WaistMode" xml:space="preserve">
+    <value>Waist Belt Mode</value>
+  </data>
+  <data name="SABT_WaistMode_Firm" xml:space="preserve">
+    <value>Ferme</value>
+  </data>
+  <data name="SABT_WaistMode_Balanced" xml:space="preserve">
+    <value>Équilibré</value>
+  </data>
+  <data name="SABT_WaistMode_Dynamic" xml:space="preserve">
+    <value>Dynamique</value>
+  </data>
   <data name="SABT_Slider_WaistTensionMultiplier" xml:space="preserve">
     <value>Waist Motor Strength</value>
   </data>
