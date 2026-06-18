@@ -364,6 +364,62 @@ namespace User.ActiveBeltTensioner
             }
         }
 
+        private bool _freeCordProtectionEnabled = false;
+        public bool FreeCordProtectionEnabled
+        {
+            get { return _freeCordProtectionEnabled; }
+            set
+            {
+                if (_freeCordProtectionEnabled != value)
+                {
+                    _freeCordProtectionEnabled = value;
+                    InvokePropertyChange(nameof(FreeCordProtectionEnabled));
+                }
+            }
+        }
+
+        private int _rollerDiameterMm = 32;
+        public int RollerDiameterMm
+        {
+            get { return _rollerDiameterMm; }
+            set
+            {
+                if (_rollerDiameterMm != value)
+                {
+                    _rollerDiameterMm = Math.Min(Math.Max(value, 10), 60);
+                    InvokePropertyChange(nameof(RollerDiameterMm));
+                }
+            }
+        }
+
+        private int _shoulderMaxReelMm = 100;
+        public int ShoulderMaxReelMm
+        {
+            get { return _shoulderMaxReelMm; }
+            set
+            {
+                if (_shoulderMaxReelMm != value)
+                {
+                    _shoulderMaxReelMm = Math.Min(Math.Max(value, 20), 400);
+                    InvokePropertyChange(nameof(ShoulderMaxReelMm));
+                }
+            }
+        }
+
+        private int _waistMaxReelMm = 100;
+        public int WaistMaxReelMm
+        {
+            get { return _waistMaxReelMm; }
+            set
+            {
+                if (_waistMaxReelMm != value)
+                {
+                    _waistMaxReelMm = Math.Min(Math.Max(value, 20), 400);
+                    InvokePropertyChange(nameof(WaistMaxReelMm));
+                }
+            }
+        }
+
         // [4WD]
         private WaistMode _waistMode = WaistMode.Static;
         public WaistMode WaistMode

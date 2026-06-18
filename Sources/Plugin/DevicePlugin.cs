@@ -673,6 +673,15 @@ namespace User.ActiveBeltTensioner
 
                             IsEnabled = false;
                         }
+                        else if (motorController.FreeCordTripped)
+                        {
+                            // A harness buckle was released (cord spinning freely). Disable
+                            // motors silently so the user can exit the rig without pressing
+                            // a button; re-enable via the 'Enable Motors' toggle.
+                            Logging.Current.Info("SABT: Free-cord detected, disabling motors");
+
+                            IsEnabled = false;
+                        }
                     }
                 }
                 catch (Exception exception)

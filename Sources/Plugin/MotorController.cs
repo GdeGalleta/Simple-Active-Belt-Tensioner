@@ -96,12 +96,19 @@ namespace User.ActiveBeltTensioner
             private int _commandFailures = 0;
             private double _smoothedTorque = 0.0;
 
+            private readonly bool _isRightSide;
+            private readonly bool _isWaist;
+            private double _reeledMm = 0;
+            private long _lastReelTicks = 0;
+
             public Motor(MotorController controller, byte identifier, string label = "Unassigned")
             {
                 _controller = controller;
 
                 Identifier = identifier;
                 Label = label;
+                _isRightSide = label == "Right" || label == "RightWaist";
+                _isWaist = label == "LeftWaist" || label == "RightWaist";
             }
 
             /// <summary>Invokes various methods to ascertain the status of the motor, while updating its status indicators</summary>
@@ -113,6 +120,8 @@ namespace User.ActiveBeltTensioner
                 Graphic = MotorGraphic.Disconnected;
 
                 _smoothedTorque = 0;
+                _reeledMm = 0;
+                _lastReelTicks = 0;
 
                 if (!_controller.HasSerial)
                 {
@@ -347,12 +356,42 @@ namespace User.ActiveBeltTensioner
                 if (!_controller.WriteFrameReadFrame(tx, rx, 10))
                 {
                     _commandFailures++;
-                    
+
                     Logging.Current.Warn("SABT: " + this.Label + " Motor communication failure (" + _commandFailures + "/" + _maximumConsecutiveFailures  + " Allowed)");
 
                     return (_commandFailures < _maximumConsecutiveFailures);
                 }
-                
+
+                // Parse velocity (bytes 2–3, signed RPM) and integrate reeled cord to enforce the max reel-in limit
+                if (_controller._plugin.Settings.FreeCordProtectionEnabled)
+                {
+                    short velocityRpm = (short)((rx[2] << 8) | rx[3]);
+                    long now = System.Diagnostics.Stopwatch.GetTimestamp();
+
+                    if (_lastReelTicks > 0)
+                    {
+                        double dt = (now - _lastReelTicks) / (double)System.Diagnostics.Stopwatch.Frequency;
+                        double mmPerRev = Math.PI * _controller._plugin.Settings.RollerDiameterMm;
+                        double windingSign = _isRightSide ? -1.0 : 1.0; // VERIFY sign on hardware
+                        double deltaMm = windingSign * (velocityRpm / 60.0) * dt * mmPerRev;
+
+                        // Floor at 0 so the reference follows the most-extended point (paying out resets the baseline)
+                        _reeledMm = Math.Max(0, _reeledMm + deltaMm);
+
+                        double maxMm = _isWaist
+                            ? _controller._plugin.Settings.WaistMaxReelMm
+                            : _controller._plugin.Settings.ShoulderMaxReelMm;
+
+                        if (_reeledMm > maxMm)
+                        {
+                            _controller.FreeCordTripped = true;
+                            Logging.Current.Warn($"SABT: {Label} reeled {_reeledMm:F0}mm > {maxMm}mm, disabling motors");
+                        }
+                    }
+
+                    _lastReelTicks = now;
+                }
+
                 _commandFailures = 0;
 
                 return true;
@@ -360,6 +399,10 @@ namespace User.ActiveBeltTensioner
         }
 
         public Motor[] Motors { get; private set; }
+
+        /// <summary>Set by a motor when it detects free-cord spin; the control loop reads this to disable the plugin</summary>
+        public bool FreeCordTripped { get; set; }
+
         public bool IsBusy {
             get { lock (_actionLock) { return _actionsIdentifiers.Count > 0; } }
         }
@@ -828,6 +871,8 @@ namespace User.ActiveBeltTensioner
             }
 
             StartAction(out string action);
+
+            FreeCordTripped = false; // clear any free-cord trip on (re)connect
 
             foreach (Motor motor in Motors)
             {

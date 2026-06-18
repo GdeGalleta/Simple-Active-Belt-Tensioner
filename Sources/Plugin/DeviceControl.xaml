@@ -171,6 +171,24 @@
                                     <TextBlock LineHeight="20" TextWrapping="WrapWithOverflow" Margin="5,0,0,5" Text="{SLoc SABT_Label_WaistTensionMultiplier}" />
                                 </StackPanel>
 
+                                <styles:SHSectionSeparator />
+
+                                <TextBlock TextWrapping="WrapWithOverflow" Margin="0,0,0,8">
+                                    <Label Content="{SLoc SABT_Label_FreeCordProtectionEnabled}" Margin="-5,0,0,0" />
+                                    <styles:SHToggleCheckbox IsChecked="{Binding Settings.FreeCordProtectionEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </TextBlock>
+
+                                <StackPanel IsEnabled="{Binding Settings.FreeCordProtectionEnabled}">
+                                    <ui:TitledSlider Title="{SLoc SABT_Label_RollerDiameter}" Maximum="60" Minimum="10" Value="{Binding Settings.RollerDiameterMm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                                    <ui:TitledSlider Title="{SLoc SABT_Label_ShoulderMaxReel}" Maximum="400" Minimum="20" Value="{Binding Settings.ShoulderMaxReelMm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    <TextBlock LineHeight="20" TextWrapping="WrapWithOverflow" Margin="5,0,0,5" Text="{SLoc SABT_Text_MaxReel}" />
+
+                                    <StackPanel Visibility="{Binding MotorController.IsWaistEnabled, Converter={StaticResource BoolToVis}}">
+                                        <ui:TitledSlider Title="{SLoc SABT_Label_WaistMaxReel}" Maximum="400" Minimum="20" Value="{Binding Settings.WaistMaxReelMm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </StackPanel>
+
                             </StackPanel>
                         </styles:SHTitledGroup>
                     </styles:SHTabItem>

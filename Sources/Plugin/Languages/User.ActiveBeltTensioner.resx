@@ -249,6 +249,21 @@
   <data name="SABT_Message_Setup_WaistCancelledIncomplete" xml:space="preserve">
     <value>Setup was cancelled before the RIGHT WAIST MOTOR was configured. The left waist motor has already been assigned its identifier and cannot be reassigned until it is power-cycled. Power off all motors, then click 'Setup Motors' again to complete waist setup.</value>
   </data>
+  <data name="SABT_Label_FreeCordProtectionEnabled" xml:space="preserve">
+    <value>Enable Free-Cord Protection</value>
+  </data>
+  <data name="SABT_Label_RollerDiameter" xml:space="preserve">
+    <value>Roller Diameter (mm)</value>
+  </data>
+  <data name="SABT_Label_ShoulderMaxReel" xml:space="preserve">
+    <value>Shoulder Max Reel-in (mm)</value>
+  </data>
+  <data name="SABT_Label_WaistMaxReel" xml:space="preserve">
+    <value>Waist Max Reel-in (mm)</value>
+  </data>
+  <data name="SABT_Text_MaxReel" xml:space="preserve">
+    <value>If a motor reels in more than this much cord (mm) since the motors were enabled, a belt is assumed released and all motors are switched off. Re-enable them with 'Enable Motors'. Set this above the slack your tensioner takes up when you buckle in, but below the distance that would pull the clamp into the pulley.</value>
+  </data>
   <data name="SABT_Plugin" xml:space="preserve">
     <value>Simple Active Belt Tensioner</value>
   </data>
